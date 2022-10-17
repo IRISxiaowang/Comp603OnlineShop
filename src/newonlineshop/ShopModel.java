@@ -12,22 +12,24 @@ import java.util.Observable;
  */
 public class ShopModel extends Observable{
     DataBase db;
-    Data data;
-    String username;
+    User currentUser;
     
     public ShopModel(){
         this.db = new DataBase();
         this.db.dbsetup();
+        currentUser = null;
     }
     
-    public void checkName(String username, String password, String name){
-        this.username = username;
-        this.data = this.db.checkNameDB(username, password);
-        if(!data.login){
-            db.insertDB(username, password, name);
-        }
-        this.setChanged();
-        this.notifyObservers(data);//*****connect model and view with data(model extends Observerable,view implements Observer)
+    public void registerNewUser(User user){
+        db.insertDB(user);
+    }
+    
+    public void login(String username, String password){
+        this.currentUser = this.db.login(username, password);
+    }
+    
+    public boolean hasUser(String username) {
+        return db.hasUser(username);
     }
 }
 

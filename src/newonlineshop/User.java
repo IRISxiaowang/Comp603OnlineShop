@@ -9,17 +9,21 @@ package newonlineshop;
  * @author xiaowang
  */
     enum Role {
-    SELLER,
-    BUYER;
+    BUYER,
+    SELLER;
     
     public String toString(){
         switch(this) {
-            case SELLER:
-                return "Seller";
             case BUYER:
                 return "Buyer";
+            case SELLER:
+                return "Seller";
         }
         return "";
+    }
+    
+    public int toInt(){
+        return this.ordinal();
     }
 }
 
@@ -29,12 +33,12 @@ public abstract class User {
     public final String password;
     public final String name;
     public final String address;
-    public final long phone;
+    public final String phone;
     public final String email;
     public final String bankAccount;
     public final Role role;
 
-    public User(int userID, String username, String password, String name, String address, long phone, String email, String bankAccount, Role role) {
+    public User(int userID, String username, String password, String name, String address, String phone, String email, String bankAccount, Role role) {
         this.userID = userID;
         this.username = username;   //Winter: This is username for login
         this.password = password;
