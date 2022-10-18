@@ -68,9 +68,18 @@ public class ShopController implements ActionListener {
                             view.baInput.getText()
                         );
                     }
-                    registerNewUser(user);
+                    // Check if data is valid
+                    if(isUserDataValid(user)){
+                        registerNewUser(user);
+                    }
                 }
                 break;
+            case "Cancel":
+                view.showLoginMenu();
+                break;
+            case "Quit":
+                System.exit(0);
+                
         }
 
     }
@@ -83,5 +92,98 @@ public class ShopController implements ActionListener {
             view.showLoginMenu();
         }
     }
-
+    
+    public boolean isUserDataValid(User user){
+        // Check username
+        // Check password
+        if (user.username.trim().length() == 0) {
+            view.updateMessage("Username cannot be empty.");
+            return false;
+        }
+        // No white space
+        if (user.username.contains(" ")) {
+            view.updateMessage("The username cannot contain whitespace, try again.\n");
+            return false;
+        }
+        // Too short
+        if (user.username.trim().length() < 3) {
+            view.updateMessage("Username too short, at least 3 characters, try again.\n");
+            return false;
+        }
+        // Too long
+        if (user.username.length() > 16) {
+            view.updateMessage("Username too long, max of 16 characters, try again.\n");
+            return false;
+        }
+        if (user.password.trim().length() == 0) {
+            view.updateMessage("Password cannot be empty.");
+            return false;
+        }
+        // No white space
+        if (user.password.contains(" ")) {
+            view.updateMessage("The password cannot contain whitespace, try again.\n");
+            return false;
+        }
+        // Too short
+        if (user.password.trim().length() < 4) {
+            view.updateMessage("Password too short, at least 4 characters, try again.\n");
+           return false;
+        }
+        // Too long
+        if (user.password.length() > 16) {
+            view.updateMessage("Password too long, max of 16 characters, try again.\n");
+           return false;
+        }
+        if (user.name.trim().length() == 0) {
+            view.updateMessage("Name cannot be empty.");
+            return false;
+        }
+        // Too long
+        if (user.name.length() > 128) {
+            view.updateMessage("Name too long, max of 128 characters, try again.\n");
+            return false;
+        }
+        if (user.address.trim().length() == 0) {
+            view.updateMessage("Address cannot be empty.");
+            return false;
+        }
+        // Too long
+        if (user.address.length() > 512) {
+            view.updateMessage("Address too long, max of 512 characters, try again.\n");
+            return false;
+        }
+        if (user.phone.trim().length() == 0) {
+            view.updateMessage("Phone cannot be empty.");
+            return false;
+        }
+        // Too long
+        if (user.phone.length() > 12 + 4) {
+            view.updateMessage("Phone too long, max of 16 digits, try again.\n");
+            return false;
+        }
+        // Too short
+        if (user.phone.length() < 3) {
+            view.updateMessage("Phone too short, at least 3 digits, try again.\n");
+            return false;
+        }
+        if (user.email.trim().length() == 0) {
+            view.updateMessage("Email cannot be empty.");
+            return false;
+        }
+        if (user.bankAccount.trim().length() == 0) {
+            view.updateMessage("Bank account cannot be empty.");
+            return false;
+        }
+        // Too long
+        if (user.bankAccount.length() > 28) {
+            view.updateMessage("Account too long, max of 28 digits, try again.\n");
+            return false;
+        }
+        // Too short
+        if (user.bankAccount.length() < 3) {
+            view.updateMessage("Account too short, at least 3 digits, try again.\n");
+            return false;
+        }
+        return true;
+    }
 }

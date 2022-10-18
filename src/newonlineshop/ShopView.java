@@ -40,11 +40,11 @@ public class ShopView extends JFrame implements Observer{
     public JTextField rnInput = new JTextField(20);
     private JLabel bankAccount = new JLabel("Bank Account: ");
     public JTextField baInput = new JTextField(20);
-    private JLabel registerInfo = new JLabel(" ");
+    //private JLabel registerInfo = new JLabel(" ");
     private final String[] s = {"Buyer", "Seller"};
     
     private JLabel addressLabel = new JLabel(" Address: ");
-    public JTextField addressInput = new JTextField(30);
+    public JTextField addressInput = new JTextField(20);
     
     private JLabel phoneLabel = new JLabel("   Phone: ");
     public JTextField phoneInput = new JTextField(20);
@@ -57,8 +57,8 @@ public class ShopView extends JFrame implements Observer{
     public ShopView(){
         currentStage = ProgramStage.LOGIN;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(600, 400);
-        
+        this.setSize(680, 260);
+        this.setResizable(false);
         showLoginMenu();
         this.setVisible(true);
     }
@@ -76,7 +76,7 @@ public class ShopView extends JFrame implements Observer{
         userPanel.add(pwInput);
         userPanel.add(loginButton);
         userPanel.add(registerButton);
-        
+        quitButton.setText("Quit");
         userPanel.add(quitButton);
         userPanel.add(info);
         
@@ -87,17 +87,24 @@ public class ShopView extends JFrame implements Observer{
     public void showRegisterMenu(){
         userPanel.setVisible(false);
         currentStage = ProgramStage.REGISTER;
+        unInput.setText("");
+        rnInput.setText("");
+        pwInput.setText("");
+        baInput.setText("");
+        addressInput.setText("");
+        phoneInput.setText("");
+        emailInput.setText("");
+        
+        registerPanel.add(uName);
+        registerPanel.add(unInput);
+        registerPanel.add(pWord);
+        registerPanel.add(pwInput);
         
         registerPanel.add(rName);
         registerPanel.add(rnInput);
-        registerPanel.add(uName);
-        registerPanel.add(unInput);
-       
-        registerPanel.add(pWord);
-        registerPanel.add(pwInput);
         registerPanel.add(bankAccount);
         registerPanel.add(baInput);
-        registerPanel.add(role);
+       
         
         registerPanel.add(addressLabel);
         registerPanel.add(addressInput);
@@ -105,8 +112,10 @@ public class ShopView extends JFrame implements Observer{
         registerPanel.add(phoneInput);
         registerPanel.add(emailLabel);
         registerPanel.add(emailInput);
-
+         
+        registerPanel.add(role);
         registerPanel.add(registerButton);
+        quitButton.setText("Cancel");
         registerPanel.add(quitButton);
         registerPanel.add(info);
         
@@ -114,8 +123,10 @@ public class ShopView extends JFrame implements Observer{
         registerPanel.setVisible(true);
     }
     
-    public void menu(){
-        
+    public void showMainMenu(){
+        userPanel.setVisible(true);
+        currentStage = ProgramStage.MAINMENU;
+       // if(buyer)show products, seller add products
     }
     public void addActionListener(ActionListener listener){//****controller switch to different action 
         this.registerButton.addActionListener(listener);
