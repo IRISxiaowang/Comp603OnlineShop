@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,12 +25,15 @@ public class DataBase {
     String dbusername = "pdc";
     String dbpassword = "pdc";
     public final String USER_TABLE_NAME = "ShopUser";
-
+    public final String PRODUCT_TABLE_NAME = "Product";//
     public void dbsetup() {
         try {
             conn = DriverManager.getConnection(url, dbusername, dbpassword);
             if (!checkTableExisting(USER_TABLE_NAME)) {
                 executeSqlUpdate("CREATE TABLE " + USER_TABLE_NAME + " (userId INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), username VARCHAR(30), password VARCHAR(30), name VARCHAR(30), bankaccount VARCHAR(30), address VARCHAR(30), phone VARCHAR(30), email VARCHAR(30), role INT)");
+            }
+            if (!checkTableExisting(PRODUCT_TABLE_NAME)) {
+                executeSqlUpdate("CREATE TABLE " + PRODUCT_TABLE_NAME + " (productID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), userId INT, productName VARCHAR(30), price DOUBLE, description VARCHAR(30))");
             }
         } catch (Throwable e) {
             System.out.println(e);
@@ -117,13 +121,46 @@ public class DataBase {
         return false;
     }
 
+    public boolean hasProduct(String productName){
+        String query = "SELECT productName FROM " + PRODUCT_TABLE_NAME + " WHERE productName = '" + productName + "'";
+        ResultSet rs = executeSqlQuery(query);
+        try {
+            boolean hasUser = rs.next();
+            rs.close();
+            return hasUser;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
     public void insertDB(User user) {
         // username , password, name, bankaccount, address, phone, email, role
         executeSqlUpdate("INSERT INTO " + USER_TABLE_NAME
                 + " (username, password, name, bankaccount, address, phone, email, role)"
                 + " VALUES ('" + user.username + "', '" + user.password + "', '" + user.name + "', '" + user.bankAccount + "', '" + user.address + "', '" + user.phone + "', '" + user.email + "', " + user.role.toInt() + ")");
     }
+    
+    public void insertProductDB(Product product) {//19
+        
+        executeSqlUpdate("INSERT INTO " + PRODUCT_TABLE_NAME
+                + " (productName, price, description)"
+                + " VALUES ('" + product.userID +"', '" + product.productName + "', '" + product.price + "', '" + product.description + ")");
+    }
 
+    public ArrayList<String[]> productInfo(User user){
+        String query = "SELECT * FROM " + PRODUCT_TABLE_NAME + " WHERE userId = " + user.userID;
+        ArrayList<String[]> res = new ArrayList<>();
+        try {
+            ResultSet rs = executeSqlQuery(query);
+            while(rs.next()) {
+                String[] row = {rs.getString("productName"), rs.getString("price"), rs.getString("description")};
+                res.add(row);
+            }
+            } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return res;
+    }
     public void executeSqlUpdate(String command) {
         System.out.print("SQL Command: <" + command + ">");
 

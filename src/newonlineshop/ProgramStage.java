@@ -12,7 +12,8 @@ public enum ProgramStage {
     MAINMENU,
     LOGIN, 
     REGISTER, 
-    SHOPMENU, 
+    SHOPMENUBUY, 
+    SHOPMENUSELL,
     EXIT;
     
     @Override
@@ -24,8 +25,10 @@ public enum ProgramStage {
                 return "Login";
             case REGISTER:
                 return "Register";
-            case SHOPMENU:
-                return "Shop Menu";
+            case SHOPMENUBUY:
+                return "Shop Buy Menu";
+            case SHOPMENUSELL:
+                return "Shop Sell Menu";
             case EXIT:
                 return "Exit";
         }

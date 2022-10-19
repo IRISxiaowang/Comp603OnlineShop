@@ -6,6 +6,7 @@ package newonlineshop;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 /**
  *
@@ -15,10 +16,13 @@ public class ShopController implements ActionListener {
 
     ShopModel model;
     ShopView view;
+    MainMenuView menuView;
 
-    public ShopController(ShopModel model, ShopView view) {
+    public ShopController(ShopModel model, ShopView view){//, MainMenuView menuView) {
         this.model = model;
         this.view = view;
+//        this.menuView = menuView;
+//        menuView.addActionListener(this);
         view.addActionListener(this);
     }
 
@@ -30,10 +34,13 @@ public class ShopController implements ActionListener {
                 String username = view.unInput.getText();
                 String password = view.pwInput.getText();
                 model.login(username, password);
-                if (model.currentUser == null) {
+                if (model.getCurrentUser() == null) {
                     view.updateMessage("Login failed. Incorrect Username or password.");
                 } else {
-                    view.updateMessage("Login Successful. Welcome " + model.currentUser.name);
+                    view.updateMessage("Login Successful. Welcome " + model.getCurrentUser().name);
+                    view.dispose();
+                    menuView = new MainMenuView();
+                    //view.dispatchEvent(new WindowEvent(view, WindowEvent.WINDOW_CLOSING));
                 }
                 break;
             case "Register":

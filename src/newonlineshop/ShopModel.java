@@ -4,6 +4,7 @@
  */
 package newonlineshop;
 
+import java.util.ArrayList;
 import java.util.Observable;
 
 /**
@@ -11,13 +12,18 @@ import java.util.Observable;
  * @author xiaowang
  */
 public class ShopModel extends Observable{
-    DataBase db;
-    User currentUser;
+    private static DataBase db;
+    private static User currentUser;
+    private Product product;
     
     public ShopModel(){
         this.db = new DataBase();
         this.db.dbsetup();
         currentUser = null;
+    }
+    
+    public User getCurrentUser(){
+        return currentUser;
     }
     
     public void registerNewUser(User user){
@@ -30,6 +36,18 @@ public class ShopModel extends Observable{
     
     public boolean hasUser(String username) {
         return db.hasUser(username);
+    }
+    
+    public static ArrayList<String[]> getProductInfo(){
+        return db.productInfo(currentUser);
+    }
+    
+    public boolean hasProduct(String productName){
+        return db.hasProduct(productName);
+    }
+        
+    public void addProduct(Product product){
+        db.insertProductDB(product);
     }
 }
 
