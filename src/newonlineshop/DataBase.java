@@ -25,7 +25,8 @@ public class DataBase {
     String dbusername = "pdc";
     String dbpassword = "pdc";
     public final String USER_TABLE_NAME = "ShopUser";
-    public final String PRODUCT_TABLE_NAME = "Product";//
+    public final String PRODUCT_TABLE_NAME = "Product";
+    public final String TRANSACTION_TABLE_NAME = "ProductTransaction";
     public void dbsetup() {
         try {
             conn = DriverManager.getConnection(url, dbusername, dbpassword);
@@ -34,6 +35,9 @@ public class DataBase {
             }
             if (!checkTableExisting(PRODUCT_TABLE_NAME)) {
                 executeSqlUpdate("CREATE TABLE " + PRODUCT_TABLE_NAME + " (productID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), userId INT, productName VARCHAR(30), price DOUBLE, description VARCHAR(30))");
+            }
+            if (!checkTableExisting(TRANSACTION_TABLE_NAME)) {
+                executeSqlUpdate("CREATE TABLE " + TRANSACTION_TABLE_NAME + " (productID INT, buyerId INT, buyerAccount VARCHAR(30), sellerId INT, sellerAccount VARCHAR(30), date DATE)");//
             }
         } catch (Throwable e) {
             System.out.println(e);
@@ -120,19 +124,33 @@ public class DataBase {
         }
         return false;
     }
-
+   
     public boolean hasProduct(String productName){
         String query = "SELECT productName FROM " + PRODUCT_TABLE_NAME + " WHERE productName = '" + productName + "'";
         ResultSet rs = executeSqlQuery(query);
         try {
-            boolean hasUser = rs.next();
+            boolean hasProduct = rs.next();
             rs.close();
-            return hasUser;
+            return hasProduct;
         } catch (SQLException e) {
             System.out.println(e);
         }
         return false;
     }
+     
+    public boolean isProductSold(int productID) {
+        String query = "SELECT username FROM " + TRANSACTION_TABLE_NAME + " WHERE productID = '" + productID + "'";
+        ResultSet rs = executeSqlQuery(query);
+        try {
+            boolean isProductSold = rs.next();
+            rs.close();
+            return isProductSold;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+    
     public void insertDB(User user) {
         // username , password, name, bankaccount, address, phone, email, role
         executeSqlUpdate("INSERT INTO " + USER_TABLE_NAME
@@ -143,10 +161,18 @@ public class DataBase {
     public void insertProductDB(Product product) {//19
         
         executeSqlUpdate("INSERT INTO " + PRODUCT_TABLE_NAME
-                + " (productName, price, description)"
-                + " VALUES ('" + product.userID +"', '" + product.productName + "', '" + product.price + "', '" + product.description + ")");
+                + " (userId, productName, price, description)"
+                + " VALUES (" + product.userID +", '" + product.productName + "', " + product.price + ", '" + product.description + "')");
     }
 
+    public void insertTransactionDB(Transaction transaction) {//19
+       //TRANSACTION_TABLE_NAME + " (productID INT, buyerId INT, buyerAccount VARCHAR(30), sellerId INT, sellerAccount VARCHAR(30), date DATE)");
+ 
+        executeSqlUpdate("INSERT INTO " + TRANSACTION_TABLE_NAME
+             //   + " (userId, productName, price, description)"
+                + " VALUES ('" + transaction.getProductID() +"', '" + transaction.getBuyerID() + "', '" + transaction.getBuyerAccount() + "', '"  + transaction.getSellerID()+ "', '"  + transaction.getSellerAccount() + "', " + transaction.getDate() + ")");
+    }
+     
     public ArrayList<String[]> productInfo(User user){
         String query = "SELECT * FROM " + PRODUCT_TABLE_NAME + " WHERE userId = " + user.userID;
         ArrayList<String[]> res = new ArrayList<>();

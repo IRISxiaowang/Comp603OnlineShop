@@ -66,8 +66,8 @@ public class ShopView extends JFrame implements Observer{
     public void showLoginMenu(){
         registerPanel.setVisible(false);
         currentStage = ProgramStage.LOGIN;
-        unInput.setText("");
-        pwInput.setText("");
+        unInput.setText("1234");
+        pwInput.setText("1234");
         
         userPanel.add(uName);
         userPanel.add(unInput);

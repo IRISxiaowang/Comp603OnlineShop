@@ -16,13 +16,15 @@ public class ShopController implements ActionListener {
 
     ShopModel model;
     ShopView view;
-    MainMenuView menuView;
+    MainBuyMenuView buyMenuView;
+    MainSellMenuView sellMenuView;
+    AddProductView addProductView;
 
     public ShopController(ShopModel model, ShopView view){//, MainMenuView menuView) {
         this.model = model;
         this.view = view;
 //        this.menuView = menuView;
-//        menuView.addActionListener(this);
+//        
         view.addActionListener(this);
     }
 
@@ -38,9 +40,16 @@ public class ShopController implements ActionListener {
                     view.updateMessage("Login failed. Incorrect Username or password.");
                 } else {
                     view.updateMessage("Login Successful. Welcome " + model.getCurrentUser().name);
-                    view.dispose();
-                    menuView = new MainMenuView();
-                    //view.dispatchEvent(new WindowEvent(view, WindowEvent.WINDOW_CLOSING));
+                    view.setVisible(false);
+                    //view.dispose();
+                    if(model.getCurrentUser().role == Role.BUYER){
+                        buyMenuView = new MainBuyMenuView();
+                        buyMenuView.addActionListener(this);
+                    }
+                    if(model.getCurrentUser().role == Role.SELLER){
+                        sellMenuView = new MainSellMenuView();
+                        sellMenuView.addActionListener(this);
+                    }
                 }
                 break;
             case "Register":
@@ -83,7 +92,65 @@ public class ShopController implements ActionListener {
                 break;
             case "Cancel":
                 view.showLoginMenu();
+                view.updateMessage(" ");
                 break;
+            case "Log out":
+                if(model.getCurrentUser().role == Role.SELLER){
+                    sellMenuView.setVisible(false);
+                }
+                if(model.getCurrentUser().role == Role.BUYER){
+                    buyMenuView.setVisible(false);
+                }
+                view.setVisible(true);
+                view.showLoginMenu();
+                view.updateMessage(" ");
+                break;
+            case "Purchase History":
+                //callbuy history
+                break;
+            case "Sell History":
+                //call sell history
+                break;
+            case "Recharge Balance":
+                //call buyrecharge bank and seller
+                break;
+            case "Buy":
+                // buy add product to buyid and reduce the money from bankaccont
+                break;
+            case "Sell":
+                sellMenuView.setVisible(false);
+                addProductView = new AddProductView();
+                addProductView.addActionListener(this);
+                addProductView.setVisible(true);
+                break; 
+            case "Back to sell menu":
+                addProductView.setVisible(false);
+                sellMenuView.setVisible(true);
+                break;
+            case "Add product":
+                try{
+                Product product = new Product(
+                0,
+                model.getCurrentUser().userID,
+                addProductView.productNameInput.getText(),        
+                Double.parseDouble(addProductView.priceInput.getText()),
+                addProductView.descriptionInput.getText()
+                );
+               
+                if(isProductDataValid(product)){
+                    addNewProduct(product);
+                    sellMenuView.refreshProductsTable();
+                    addProductView.setVisible(false);
+                    sellMenuView.setVisible(true);
+                }
+                
+                
+                }catch(Exception error){
+                    System.out.println(error);
+                    addProductView.updateMessage("Add product failed. Price should be a number.");
+                }
+                break;  
+               
             case "Quit":
                 System.exit(0);
                 
@@ -98,6 +165,34 @@ public class ShopController implements ActionListener {
             model.registerNewUser(user);
             view.showLoginMenu();
         }
+    }
+    
+    public void addNewProduct(Product product) {
+        if (model.hasProduct(product.productName)) {
+            addProductView.updateMessage("Add product failed. Product aready exists.");
+        } else {
+            model.addProduct(product);
+            addProductView.updateMessage("Add product successful.");
+        }
+    }
+    
+    public boolean isProductDataValid(Product product){
+        
+        if (product.productName.trim().length() == 0) {
+            addProductView.updateMessage("Product name cannot be empty.");
+            return false;
+        }
+        
+        if (product.description.trim().length() == 0) {
+            addProductView.updateMessage("Product description cannot be empty.");
+            return false;
+        }
+        
+        if (product.price <= 0) {
+            addProductView.updateMessage("Product price cannot be nagative.");
+            return false;
+        }
+        return true;
     }
     
     public boolean isUserDataValid(User user){

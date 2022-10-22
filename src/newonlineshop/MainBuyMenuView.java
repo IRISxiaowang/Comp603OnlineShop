@@ -20,7 +20,7 @@ import javax.swing.JTextField;
  *
  * @author xiaowang
  */
-public class MainMenuView extends JFrame implements Observer{
+public class MainBuyMenuView extends JFrame implements Observer{
     ProgramStage currentStage;
     //ShopModel model;
     
@@ -40,7 +40,7 @@ public class MainMenuView extends JFrame implements Observer{
     private JButton rechargeBalanceButton = new JButton("Recharge Balance");
     private JButton quitButton = new JButton("Quit");
     
-    public MainMenuView(){
+    public MainBuyMenuView(){
         //currentStage = ProgramStage.MAINMENU;which is mainmenu?
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(800, 800);
@@ -72,9 +72,10 @@ public class MainMenuView extends JFrame implements Observer{
         
         this.add(buyPanel);
         buyPanel.setVisible(true);
-        
+        //this.setVisible(true);
     }
     
+   
     public void addActionListener(ActionListener listener){//****controller switch to different action 
         this.rechargeBalanceButton.addActionListener(listener);
         this.purchaseHistoryButton.addActionListener(listener);

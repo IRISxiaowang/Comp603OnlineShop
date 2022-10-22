@@ -14,7 +14,7 @@ import java.util.Observable;
 public class ShopModel extends Observable{
     private static DataBase db;
     private static User currentUser;
-    private Product product;
+    //private Product product;
     
     public ShopModel(){
         this.db = new DataBase();
@@ -48,6 +48,14 @@ public class ShopModel extends Observable{
         
     public void addProduct(Product product){
         db.insertProductDB(product);
+    }
+    
+    public void addTransaction(Transaction transaction){
+        db.insertTransactionDB(transaction);
+    }
+    
+    public boolean isProductSold(int productID){
+        return db.isProductSold(productID);
     }
 }
 
