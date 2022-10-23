@@ -21,7 +21,12 @@ public class ShopModel extends Observable{
         this.db.dbsetup();
         currentUser = null;
     }
-    
+    public void updateUserBalance(int userId, double balance){
+        db.updateUserBalanceDB(userId, balance);
+    }
+    public ArrayList<String[]> searchProduct(String search){
+        return db.searchProductDB(search);
+    }
     public User getCurrentUser(){
         return currentUser;
     }

@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -27,7 +28,7 @@ public class MainBuyMenuView extends JFrame implements Observer{
     private JPanel buyPanel = new JPanel();
     private JLabel userName = new JLabel();
     private JLabel currentBalance = new JLabel();
-    private JLabel search = new JLabel("Search");
+    private JButton search = new JButton("Search");
     private JLabel info = new JLabel(" ");
     
     public JTextField searchInput = new JTextField(20);
@@ -43,29 +44,31 @@ public class MainBuyMenuView extends JFrame implements Observer{
     public MainBuyMenuView(){
         //currentStage = ProgramStage.MAINMENU;which is mainmenu?
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(800, 800);
-        this.setResizable(true);
+        this.setSize(680, 550);
+        this.setResizable(false);
         //this.model = model;
         showMainBuyMenu();
         this.setVisible(true);
     }
     public void showMainBuyMenu(){
         currentStage = ProgramStage.SHOPMENUBUY;
-        buyPanel.add(userName);
-        buyPanel.add(currentBalance);
+        buyPanel.add(getUserName());
+        
         buyPanel.add(search);
         buyPanel.add(searchInput);
         
         buyPanel.add(logoutButton);
         buyPanel.add(buyButton);
+        buyPanel.add(getCurrentBalance());
         buyPanel.add(rechargeBalanceButton);
         buyPanel.add(purchaseHistoryButton);
         buyPanel.add(quitButton);
         
         String[][] productContent = ShopModel.getProductInfo().toArray(new String[0][0]);
         String[] column = {"productName", "price", "description"};
-        productsTable = new JTable(productContent, column);
-        //productsTable.setBounds(10, 10, 100, 600);
+        DefaultTableModel tableModel = new DefaultTableModel();
+        tableModel.setDataVector(productContent, column);
+        productsTable = new JTable(tableModel);
         buyPanel.add(new JScrollPane(productsTable));
         
         buyPanel.add(info);
@@ -82,6 +85,25 @@ public class MainBuyMenuView extends JFrame implements Observer{
         this.quitButton.addActionListener(listener);
         this.logoutButton.addActionListener(listener);
         this.buyButton.addActionListener(listener);
+        this.search.addActionListener(listener);
+    }
+    
+    public void refreshSearchTable(ArrayList<String[]> search){
+        String[][] productContent = search.toArray(new String[0][0]);
+        DefaultTableModel tableModel = (DefaultTableModel)productsTable.getModel();
+        String[] column = {"productName", "price", "description"};
+        tableModel.setDataVector(productContent, column);
+    }
+    
+    public void refreshProductsTable(){
+        String[][] productContent = ShopModel.getProductInfo().toArray(new String[0][0]);
+        DefaultTableModel tableModel = (DefaultTableModel)productsTable.getModel();
+        String[] column = {"productName", "price", "description"};
+        tableModel.setDataVector(productContent, column);
+    }
+    
+    public void updateBalance(double balance) {
+        currentBalance.setText("Current balance < "+String.valueOf(balance)+" >");
     }
     @Override
     public void update(Observable o, Object arg) {
@@ -91,8 +113,24 @@ public class MainBuyMenuView extends JFrame implements Observer{
     public void updateMessage(String message) {
         this.info.setText(message);
     }
+    
+    
 //    public static void main(String[] args) {
 //        ShopModel model = new ShopModel();
 //        MainMenuView v = new MainMenuView();
 //    }
+
+    /**
+     * @return the userName
+     */
+    public JLabel getUserName() {
+        return userName;
+    }
+
+    /**
+     * @return the currentBalance
+     */
+    public JLabel getCurrentBalance() {
+        return currentBalance;
+    }
 }

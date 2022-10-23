@@ -13,7 +13,7 @@ public class UserBuyer extends User {
     private double moneySpent;
     
     public UserBuyer(int userID, String username, String password, String name, String address, String phone, String email, String bankAccount) {
-        super(userID, username, password, name, address, phone, email, bankAccount, Role.BUYER);
+        super(userID, username, password, name, address, phone, email, bankAccount, Role.BUYER, 0);
         moneySpent = 0;
     }
     

@@ -37,8 +37,9 @@ public abstract class User {
     public final String email;
     public final String bankAccount;
     public final Role role;
+    public double balance;
 
-    public User(int userID, String username, String password, String name, String address, String phone, String email, String bankAccount, Role role) {
+    public User(int userID, String username, String password, String name, String address, String phone, String email, String bankAccount, Role role, double balance) {
         this.userID = userID;
         this.username = username;   //Winter: This is username for login
         this.password = password;
@@ -48,6 +49,7 @@ public abstract class User {
         this.email = email;
         this.bankAccount = bankAccount;
         this.role = role;
+        this.balance = balance;
     }
     
     public String toString() {
@@ -60,7 +62,8 @@ public abstract class User {
                 "Phone:         " + phone + "\n" +
                 "Email:         " + email + "\n" +
                 "Bank Account:  " + bankAccount + "\n"+
-                "Role:          " + role;
+                "Role:          " + role + "\n"+
+                "Balance:       " + balance;
         
     }
 }

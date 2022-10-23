@@ -57,7 +57,7 @@ public class ShopView extends JFrame implements Observer{
     public ShopView(){
         currentStage = ProgramStage.LOGIN;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(680, 260);
+        this.setSize(680, 200);
         this.setResizable(false);
         showLoginMenu();
         this.setVisible(true);
@@ -66,8 +66,8 @@ public class ShopView extends JFrame implements Observer{
     public void showLoginMenu(){
         registerPanel.setVisible(false);
         currentStage = ProgramStage.LOGIN;
-        unInput.setText("1234");
-        pwInput.setText("1234");
+        unInput.setText("");
+        pwInput.setText("");
         
         userPanel.add(uName);
         userPanel.add(unInput);

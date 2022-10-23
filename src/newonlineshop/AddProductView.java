@@ -31,8 +31,8 @@ public class AddProductView extends JFrame  {
     
     public AddProductView(){
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(400, 400);
-        this.setResizable(true);
+        this.setSize(680, 200);
+        this.setResizable(false);
         //this.model = model;
         showAddProductMenu();
         this.setVisible(true);

@@ -5,6 +5,7 @@
 package newonlineshop;
 
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JButton;
@@ -28,7 +29,7 @@ public class MainSellMenuView extends JFrame implements Observer{
     private JPanel sellPanel = new JPanel();
     private JLabel userName = new JLabel();
     private JLabel currentBalance = new JLabel();
-    private JLabel search = new JLabel("Search");
+    private JButton search = new JButton("Search");
     private JLabel info = new JLabel(" ");
     
     public JTextField searchInput = new JTextField(20);
@@ -38,28 +39,30 @@ public class MainSellMenuView extends JFrame implements Observer{
     private JButton logoutButton = new JButton("Log out");
     private JButton sellButton = new JButton("Sell");
     private JButton sellHistoryButton = new JButton("Sell History");
-    private JButton rechargeBalanceButton = new JButton("Recharge Balance");
+    //private JButton rechargeBalanceButton = new JButton("Recharge Balance");
     private JButton quitButton = new JButton("Quit");
     
     public MainSellMenuView(){
         //currentStage = ProgramStage.MAINMENU;which is mainmenu?
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(800, 800);
-        this.setResizable(true);
+        this.setSize(680, 550);
+        this.setResizable(false);
         //this.model = model;
         showMainSellMenu();
         this.setVisible(true);
     }
     public void showMainSellMenu(){
         currentStage = ProgramStage.SHOPMENUSELL;
-        sellPanel.add(userName);
-        sellPanel.add(currentBalance);
+        sellPanel.add(getUserName());
+        
         sellPanel.add(search);
         sellPanel.add(searchInput);
         
         sellPanel.add(logoutButton);
         sellPanel.add(sellButton);
-        sellPanel.add(rechargeBalanceButton);
+        sellPanel.add(getCurrentBalance());
+       // sellPanel.add(rechargeBalanceButton);
+        
         sellPanel.add(sellHistoryButton);
         sellPanel.add(quitButton);
         
@@ -83,9 +86,14 @@ public class MainSellMenuView extends JFrame implements Observer{
         String[] column = {"productName", "price", "description"};
         tableModel.setDataVector(productContent, column);
     }
-   
+    public void refreshSearchTable(ArrayList<String[]> search){
+        String[][] productContent = search.toArray(new String[0][0]);
+        DefaultTableModel tableModel = (DefaultTableModel)productsTable.getModel();
+        String[] column = {"productName", "price", "description"};
+        tableModel.setDataVector(productContent, column);
+    }
     public void addActionListener(ActionListener listener){//****controller switch to different action 
-        this.rechargeBalanceButton.addActionListener(listener);
+        this.search.addActionListener(listener);
         this.sellHistoryButton.addActionListener(listener);
         this.quitButton.addActionListener(listener);
         this.logoutButton.addActionListener(listener);
@@ -98,6 +106,20 @@ public class MainSellMenuView extends JFrame implements Observer{
     
     public void updateMessage(String message) {
         this.info.setText(message);
+    }
+
+    /**
+     * @return the userName
+     */
+    public JLabel getUserName() {
+        return userName;
+    }
+
+    /**
+     * @return the currentBalance
+     */
+    public JLabel getCurrentBalance() {
+        return currentBalance;
     }
 
 }

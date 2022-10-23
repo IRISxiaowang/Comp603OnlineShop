@@ -31,7 +31,7 @@ public class DataBase {
         try {
             conn = DriverManager.getConnection(url, dbusername, dbpassword);
             if (!checkTableExisting(USER_TABLE_NAME)) {
-                executeSqlUpdate("CREATE TABLE " + USER_TABLE_NAME + " (userId INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), username VARCHAR(30), password VARCHAR(30), name VARCHAR(30), bankaccount VARCHAR(30), address VARCHAR(30), phone VARCHAR(30), email VARCHAR(30), role INT)");
+                executeSqlUpdate("CREATE TABLE " + USER_TABLE_NAME + " (userId INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), username VARCHAR(30), password VARCHAR(30), name VARCHAR(30), bankaccount VARCHAR(30), address VARCHAR(30), phone VARCHAR(30), email VARCHAR(30), role INT, balance DOUBLE)");
             }
             if (!checkTableExisting(PRODUCT_TABLE_NAME)) {
                 executeSqlUpdate("CREATE TABLE " + PRODUCT_TABLE_NAME + " (productID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), userId INT, productName VARCHAR(30), price DOUBLE, description VARCHAR(30))");
@@ -90,6 +90,7 @@ public class DataBase {
                                 rs.getString("email"),
                                 rs.getString("bankaccount")
                         );
+                        user.balance = rs.getDouble("balance");
                     } else if (role == 1) {
                         user = new UserSeller(
                                 rs.getInt("userid"),
@@ -101,6 +102,7 @@ public class DataBase {
                                 rs.getString("email"),
                                 rs.getString("bankaccount")
                         );
+                        user.balance = rs.getDouble("balance");
                     }
                     rs.close();
                     return user;
@@ -111,7 +113,14 @@ public class DataBase {
         }
         return user;
     }
+//UPDATE Customers SET ContactName='Juan' WHERE Country='Mexico';
 
+    public void updateUserBalanceDB(int userId, double balance){
+        executeSqlUpdate("UPDATE " +USER_TABLE_NAME+ " SET balance = "+balance+" WHERE userId = "+userId);
+    }
+//SELECT * FROM MyTable WHERE Column1 LIKE 'word1 word2 word3'
+    
+    
     public boolean hasUser(String username) {
         String query = "SELECT username FROM " + USER_TABLE_NAME + " WHERE username = '" + username + "'";
         ResultSet rs = executeSqlQuery(query);
@@ -172,9 +181,9 @@ public class DataBase {
              //   + " (userId, productName, price, description)"
                 + " VALUES ('" + transaction.getProductID() +"', '" + transaction.getBuyerID() + "', '" + transaction.getBuyerAccount() + "', '"  + transaction.getSellerID()+ "', '"  + transaction.getSellerAccount() + "', " + transaction.getDate() + ")");
     }
-     
+     //WHERE   phone_number NOT IN (SELECT phone_number FROM Phone_book)
     public ArrayList<String[]> productInfo(User user){
-        String query = "SELECT * FROM " + PRODUCT_TABLE_NAME + " WHERE userId = " + user.userID;
+        String query = "SELECT * FROM " + PRODUCT_TABLE_NAME + " WHERE productID NOT IN ( SELECT productID FROM ProductTransaction)";
         ArrayList<String[]> res = new ArrayList<>();
         try {
             ResultSet rs = executeSqlQuery(query);
@@ -187,6 +196,34 @@ public class DataBase {
         }
         return res;
     }
+    public ArrayList<String[]> searchProductDB(String search){
+        String query = "SELECT * FROM " +PRODUCT_TABLE_NAME+ " WHERE productName LIKE '"+search+"' ";
+         ArrayList<String[]> res = new ArrayList<>();
+        try {
+            ResultSet rs = executeSqlQuery(query);
+            while(rs.next()) {
+                String[] row = {rs.getString("productName"), rs.getString("price"), rs.getString("description")};
+                res.add(row);
+            }
+            } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return res;
+    }
+//    public ArrayList<String[]> transactionInfo(User user){
+//        String query = "SELECT * FROM " + PRODUCT_TABLE_NAME + " WHERE productID NOT IN ( SELECT productID FROM TRANSACTION_TABLE_NAME)";
+//        ArrayList<String[]> res = new ArrayList<>();
+//        try {
+//            ResultSet rs = executeSqlQuery(query);
+//            while(rs.next()) {
+//                String[] row = {rs.getString("productName"), rs.getString("price"), rs.getString("description")};
+//                res.add(row);
+//            }
+//            } catch (SQLException e) {
+//            System.out.println(e);
+//        }
+//        return res;
+//    }
     public void executeSqlUpdate(String command) {
         System.out.print("SQL Command: <" + command + ">");
 
