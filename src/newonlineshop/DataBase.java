@@ -197,7 +197,7 @@ public class DataBase {
         return res;
     }
     public ArrayList<String[]> searchProductDB(String search){
-        String query = "SELECT * FROM " +PRODUCT_TABLE_NAME+ " WHERE productName LIKE '"+search+"' ";
+        String query = "SELECT * FROM " +PRODUCT_TABLE_NAME+ " WHERE productName LIKE '%"+search+"%' ";
          ArrayList<String[]> res = new ArrayList<>();
         try {
             ResultSet rs = executeSqlQuery(query);

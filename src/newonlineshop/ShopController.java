@@ -24,7 +24,7 @@ public class ShopController implements ActionListener {
 
     public ShopController(ShopModel model, ShopView view) {
         this.model = model;
-        this.view = view;       
+        this.view = view;
         view.addActionListener(this);
     }
 
@@ -175,22 +175,23 @@ public class ShopController implements ActionListener {
             }
             break;
             case "Recharge":
-                if(this.isRechargeDataValid()){
-                    User user =  model.getCurrentUser();
+                if (this.isRechargeDataValid()) {
+                    User user = model.getCurrentUser();
                     double amount = Double.parseDouble(rechargeView.amountInput.getText());
                     user.balance += amount;
                     model.updateUserBalance(model.getCurrentUser().userID, user.balance);
                     buyMenuView.updateBalance(user.balance);
+
+                    rechargeView.setVisible(false);
+                    buyMenuView.setVisible(true);
                 }
-                rechargeView.setVisible(false);
-                buyMenuView.setVisible(true);
                 break;
 
             case "Search":
                 if (model.getCurrentUser().role == Role.SELLER) {
                     ArrayList<String[]> search = model.searchProduct(sellMenuView.searchInput.getText());
                     sellMenuView.refreshSearchTable(search);
-                   
+
                 }
                 if (model.getCurrentUser().role == Role.BUYER) {
                     ArrayList<String[]> search = model.searchProduct(buyMenuView.searchInput.getText());
@@ -248,7 +249,7 @@ public class ShopController implements ActionListener {
             return false;
         }
         try {
-            if (Double.parseDouble(rechargeView.amountInput.getText()) < 0) {
+            if (Double.parseDouble(rechargeView.amountInput.getText()) <= 0) {
                 rechargeView.updateMessage("Amount cannot be nagative.");
                 return false;
             }

@@ -68,7 +68,12 @@ public class MainSellMenuView extends JFrame implements Observer{
         
         String[][] productContent = ShopModel.getProductInfo().toArray(new String[0][0]);
         String[] column = {"productName", "price", "description"};
-        DefaultTableModel tableModel = new DefaultTableModel();
+        DefaultTableModel tableModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               return false;
+            }
+        };
         tableModel.setDataVector(productContent, column);
         productsTable = new JTable(tableModel);
         sellPanel.add(new JScrollPane(productsTable));

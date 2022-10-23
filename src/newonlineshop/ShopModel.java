@@ -25,7 +25,11 @@ public class ShopModel extends Observable{
         db.updateUserBalanceDB(userId, balance);
     }
     public ArrayList<String[]> searchProduct(String search){
-        return db.searchProductDB(search);
+        if(search.length() == 0){
+            return getProductInfo();
+        } else {
+            return db.searchProductDB(search);
+        }
     }
     public User getCurrentUser(){
         return currentUser;
