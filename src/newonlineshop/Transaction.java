@@ -7,7 +7,7 @@ package newonlineshop;
 import java.time.LocalDate;
 
 /**
- *
+ * This class represents a Transaction.
  * @author xiaowang
  */
 public class Transaction {

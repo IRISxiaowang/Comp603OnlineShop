@@ -12,11 +12,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- *
+ * Main controller class for the application. 
  * @author xiaowang
  */
 public class ShopController implements ActionListener {
-
     ShopModel model;
     ShopView view;
     MainBuyMenuView buyMenuView;
@@ -31,17 +30,19 @@ public class ShopController implements ActionListener {
         this.view = view;
         view.addActionListener(this);
     }
-
+    
+    /// Handles all the actions triggered by the Views. Action commands are used to 
+    /// distinguish what action should be triggered.
     @Override
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
         switch (action) {
             case "Log in":
+                // Checks inputs and attempt to login.
                 String username = view.unInput.getText();
                 String password = view.pwInput.getText();
                 if(username.contains("'")){
                     view.updateMessage("Username cannot contain \" ' \".");
-                    
                 }else if(password.contains("'")){
                     view.updateMessage("Password cannot contain \" ' \".");
                 }else{ 
@@ -87,7 +88,6 @@ public class ShopController implements ActionListener {
                                 view.baInput.getText(),
                                 0
                         );
-
                     } else if (role == 1) {
                         user = new UserSeller(
                                 0,
@@ -108,10 +108,12 @@ public class ShopController implements ActionListener {
                 }
                 break;
             case "Cancel":
+                // Cancles out of the registration menu. Return to login menu.
                 view.showLoginMenu();
                 view.updateMessage(" ");
                 break;
             case "Log out":
+                // Return to the login page.
                 if (model.getCurrentUser().role == Role.SELLER) {
                     sellMenuView.setVisible(false);
                 }
@@ -129,6 +131,7 @@ public class ShopController implements ActionListener {
                 view.updateMessage(" ");
                 break;
             case "Purchase History":
+                // Shows the purchase history view.
                 if (model.getCurrentUser().role == Role.BUYER) {
                     buyMenuView.setVisible(false);
                 }
@@ -138,6 +141,7 @@ public class ShopController implements ActionListener {
                 buyHistoryView.setVisible(true);
                 break;
             case "Sell History":
+                // Shows the sales history view.
                 if (model.getCurrentUser().role == Role.SELLER) {
                     sellMenuView.setVisible(false);
                 }
@@ -147,6 +151,7 @@ public class ShopController implements ActionListener {
                 sellHistoryView.setVisible(true);
                 break;
             case "Recharge Balance":
+                // Shows the Recharnge balance view.
                 if (model.getCurrentUser().role == Role.BUYER) {
                     buyMenuView.setVisible(false);
                 }
@@ -155,7 +160,7 @@ public class ShopController implements ActionListener {
                 rechargeView.setVisible(true);
                 break;
             case "Buy":
-                // buy add product to buyid and reduce the money from bankaccont
+                // Buys the current selected item, transfer the funds to seller and adds a trasaction.
                 int row = buyMenuView.productsTable.getSelectedRow();
                 if(row != -1){
                     String selectedProductName = (String) buyMenuView.productsTable.getValueAt(row, 0);
@@ -163,32 +168,38 @@ public class ShopController implements ActionListener {
                 }
                 break;
             case "Sell":
+                // Go to the Sell product view.
                 sellMenuView.setVisible(false);
                 addProductView = new AddProductView();
                 addProductView.addActionListener(this);
                 addProductView.setVisible(true);
                 break;
             case "Back to sell menu":
+                // return to the main sell view from Sell product view.
                 sellMenuView.refreshProductsTable();
                 addProductView.setVisible(false);
                 sellMenuView.setVisible(true);
                 break;
             case "Back to sell":
+                // return to the main sell view from History.
                 sellMenuView.refreshProductsTable();
                 sellHistoryView.setVisible(false);
                 sellMenuView.setVisible(true);
                 break;
             case "Back to buy menu":
+                // return to the main buy menu from recharge view
                 buyMenuView.refreshProductsTable();
                 rechargeView.setVisible(false);
                 buyMenuView.setVisible(true);
                 break;
             case "Back to buy":
+                // return to the main buy menu from buy history view.
                 buyMenuView.refreshProductsTable();
                 buyHistoryView.setVisible(false);
                 buyMenuView.setVisible(true);
                 break;
             case "Add product":
+                // Add a new product to sell.
                 try {
                 Product product = new Product(
                         0,
@@ -210,13 +221,13 @@ public class ShopController implements ActionListener {
                     }
 
                 }
-
             } catch (Exception error) {
                 System.out.println(error);
                 addProductView.updateMessage("Add product failed. Price should be a number.");
             }
             break;
             case "Recharge":
+                // Recharge some money to the current user.
                 if (this.isRechargeDataValid()) {
                     User user = model.getCurrentUser();
                     double amount = Double.parseDouble(rechargeView.amountInput.getText());
@@ -230,6 +241,7 @@ public class ShopController implements ActionListener {
                 break;
 
             case "Search":
+                /// Perform search for the current product table.
                 if (model.getCurrentUser().role == Role.SELLER) {
                     if(sellMenuView.isActive()){
                     ArrayList<String[]> search = model.searchProduct(sellMenuView.searchInput.getText());
@@ -249,7 +261,8 @@ public class ShopController implements ActionListener {
         }
 
     }
-
+    
+    /// Register a new user.
     public void registerNewUser(User user) {
         if (model.hasUser(user.username)) {
             view.updateMessage("Registeration failed. User aready exists");
@@ -259,6 +272,7 @@ public class ShopController implements ActionListener {
         }
     }
     
+    /// Buys an product. Transfer the payment and add transaction.
     private void buy(String productName) {
         Product soldProduct = model.getProduct(productName);
         UserSeller owner = model.getProductOwner(productName);
@@ -270,24 +284,27 @@ public class ShopController implements ActionListener {
         if(model.getCurrentUser().balance < soldProduct.price){
             buyMenuView.updateMessage("Please recharge your account first, money is not enough.");
         }else{
+            // Add a new transaction
             LocalDate date = LocalDate.now();
             Transaction newTransaction = new Transaction(soldProduct.productID, model.getCurrentUser().userID, model.getCurrentUser().bankAccount, owner.userID, owner.bankAccount, date);
             model.addTransaction(newTransaction);
+            
+            // Update balances for buyer and seller
             double newBuyerBalance = model.getCurrentUser().balance - soldProduct.price;
             model.updateUserBalance(model.getCurrentUser().userID, newBuyerBalance);
             model.getCurrentUser().balance = newBuyerBalance;
             buyMenuView.updateBalance(newBuyerBalance);
-            buyMenuView.refreshProductsTable();
             double newSellerBalance = owner.balance + soldProduct.price;
             model.updateUserBalance(owner.userID, newSellerBalance);
-           
+            
+            // Refresh View
+            buyMenuView.refreshProductsTable();
         }
     }
 
 
-
+    /// Checks if the recharge input is valid.
     public boolean isRechargeDataValid() {
-
         if (rechargeView.amountInput.getText().trim().length() == 0) {
             rechargeView.updateMessage("Amount cannot be empty.");
             return false;
@@ -349,9 +366,9 @@ public class ShopController implements ActionListener {
         }
         return true;
     }
-
+    
+    /// Checks if a product data is valid.
     public boolean isProductDataValid(Product product) {
-
         if (product.productName.trim().length() == 0) {
             addProductView.updateMessage("Product name cannot be empty.");
             return false;
@@ -376,7 +393,8 @@ public class ShopController implements ActionListener {
         }
         return true;
     }
-
+    
+    /// Checks if user data is valid
     public boolean isUserDataValid(User user) {
         // Check username
         // Check password

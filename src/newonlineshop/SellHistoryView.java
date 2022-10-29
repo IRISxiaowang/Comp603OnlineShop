@@ -14,12 +14,10 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * GUI for displaying Sales history
  * @author xiaowang
  */
 public class SellHistoryView extends JFrame {
-
-    
     private JPanel sellHistoryPanel = new JPanel();
     private JLabel userName = new JLabel();
     
@@ -37,6 +35,8 @@ public class SellHistoryView extends JFrame {
         showSellHistoryMenu();
         this.setVisible(true);
     }
+    
+    /// Sets up the GUI
     public void showSellHistoryMenu(){
         
         sellHistoryPanel.add(getUserName());
@@ -62,13 +62,14 @@ public class SellHistoryView extends JFrame {
         //this.setVisible(true);
     }
     
-   
+    /// Add action listeners for all elements.
     public void addActionListener(ActionListener listener){//****controller switch to different action 
         this.quitButton.addActionListener(listener);
         this.logoutButton.addActionListener(listener);
         this.bactToBuyButton.addActionListener(listener);
     }
     
+    /// Gets the products sold and fill the table.
     public void refreshProductsTable(){
         String[][] productContent = ShopModel.getSellerHistoryInfo().toArray(new String[0][0]);
         DefaultTableModel tableModel = (DefaultTableModel)transactionTable.getModel();

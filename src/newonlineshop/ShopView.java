@@ -4,10 +4,7 @@
  */
 package newonlineshop;
 
-import java.awt.GridLayout;
 import java.awt.event.ActionListener;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -16,10 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- *
+ * Entry GUI view for the app. Contains Login and registration.
  * @author xiaowang
  */
-public class ShopView extends JFrame implements Observer{
+public class ShopView extends JFrame{
     ProgramStage currentStage;
     
     private int ROW_HEIGHT = 100;
@@ -64,6 +61,7 @@ public class ShopView extends JFrame implements Observer{
         this.setVisible(true);
     }
     
+    /// Sets up and display the Login menu
     public void showLoginMenu(){
         registerPanel.setVisible(false);
         currentStage = ProgramStage.LOGIN;
@@ -86,6 +84,7 @@ public class ShopView extends JFrame implements Observer{
         userPanel.setVisible(true);
     }
     
+    /// Sets up and display the Register view.
     public void showRegisterMenu(){
         userPanel.setVisible(false);
         currentStage = ProgramStage.REGISTER;
@@ -126,23 +125,19 @@ public class ShopView extends JFrame implements Observer{
         registerPanel.setVisible(true);
     }
     
+    /// Shows the login view.
     public void showMainMenu(){
         userPanel.setVisible(true);
         currentStage = ProgramStage.MAINMENU;
-       // if(buyer)show products, seller add products
     }
-    public void addActionListener(ActionListener listener){//****controller switch to different action 
+    
+    /// Adds action listener for all elements.
+    public void addActionListener(ActionListener listener){
         this.registerButton.addActionListener(listener);
         this.loginButton.addActionListener(listener);
         this.quitButton.addActionListener(listener);
         this.cancelButton.addActionListener(listener);
-    }
-    
-    @Override
-    public void update(Observable o, Object arg) {
-       
-    }
-    
+    }  
     
     public void updateMessage(String message) {
         this.info.setText(message);

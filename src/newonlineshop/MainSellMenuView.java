@@ -6,8 +6,6 @@ package newonlineshop;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,10 +17,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 /**
- *
+ *  Contains the main menu view for sellers.
  * @author xiaowang
  */
-public class MainSellMenuView extends JFrame implements Observer{
+public class MainSellMenuView extends JFrame{
     ProgramStage currentStage;
     
     private JPanel sellPanel = new JPanel();
@@ -47,6 +45,8 @@ public class MainSellMenuView extends JFrame implements Observer{
         showMainSellMenu();
         this.setVisible(true);
     }
+    
+    /// Sets up the GUI
     public void showMainSellMenu(){
         currentStage = ProgramStage.SHOPMENUSELL;
         sellPanel.add(getUserName());
@@ -80,30 +80,32 @@ public class MainSellMenuView extends JFrame implements Observer{
         
     }
     
+    /// Asks the model for the latest products on sale.
     public void refreshProductsTable(){
         String[][] productContent = ShopModel.getOnSaleProduct().toArray(new String[0][0]);
         DefaultTableModel tableModel = (DefaultTableModel)productsTable.getModel();
         String[] column = {"productName", "price", "description"};
         tableModel.setDataVector(productContent, column);
     }
+    
+    /// Asks the model for search result
     public void refreshSearchTable(ArrayList<String[]> search){
         String[][] productContent = search.toArray(new String[0][0]);
         DefaultTableModel tableModel = (DefaultTableModel)productsTable.getModel();
         String[] column = {"productName", "price", "description"};
         tableModel.setDataVector(productContent, column);
     }
-    public void addActionListener(ActionListener listener){//****controller switch to different action 
+    
+    /// Add action listener for all elements
+    public void addActionListener(ActionListener listener){
         this.search.addActionListener(listener);
         this.sellHistoryButton.addActionListener(listener);
         this.quitButton.addActionListener(listener);
         this.logoutButton.addActionListener(listener);
         this.sellButton.addActionListener(listener);
     }
-    @Override
-    public void update(Observable o, Object arg) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     
+    /// Updates user message on the GUI.
     public void updateMessage(String message) {
         this.info.setText(message);
     }

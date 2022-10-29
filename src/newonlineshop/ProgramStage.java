@@ -5,7 +5,7 @@
 package newonlineshop;
 
 /**
- *
+ * Class contains which stage the program is currently in.
  * @author xiaowang
  */
 public enum ProgramStage {

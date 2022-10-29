@@ -4,10 +4,8 @@
  */
 package newonlineshop;
 
-import java.util.OptionalInt;
-
 /**
- *
+ * A class used to store information for a product.
  * @author xiaowang
  */
 public class Product {
@@ -17,8 +15,7 @@ public class Product {
     public final int userID;
     public final String description;
      
-    public Product(int productID, int userID, String productName, double price, String description) {// OptionalInt buyerID,
-        
+    public Product(int productID, int userID, String productName, double price, String description) {// OptionalInt buyerID, 
         this.userID = userID;
         this.productID = productID;
         this.productName = productName;

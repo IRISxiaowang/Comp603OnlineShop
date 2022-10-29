@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- *
+ * View for recharging balance in an account.
  * @author xiaowang
  */
 public class RechargeView extends JFrame {
@@ -42,6 +42,7 @@ public class RechargeView extends JFrame {
         this.setVisible(true);
     }
     
+    /// Sets up the GUI
     public void showRechargeMenu(){
         holderNameInput.setText("");
         amountInput.setText("");
@@ -69,10 +70,13 @@ public class RechargeView extends JFrame {
         rechargePanel.setVisible(true);
     }
     
-    public void addActionListener(ActionListener listener){//****controller switch to different action 
+    /// Add action listener for all elements
+    public void addActionListener(ActionListener listener){
         this.rechargeButton.addActionListener(listener);
         this.toSellerButton.addActionListener(listener);
     }
+    
+    /// Update user messages
     public void updateMessage(String message) {
         this.info.setText(message);
     }
