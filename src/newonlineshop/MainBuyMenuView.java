@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,7 +24,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainBuyMenuView extends JFrame implements Observer{
     ProgramStage currentStage;
-    //ShopModel model;
+   
     
     private JPanel buyPanel = new JPanel();
     private JLabel userName = new JLabel();
@@ -33,7 +34,7 @@ public class MainBuyMenuView extends JFrame implements Observer{
     
     public JTextField searchInput = new JTextField(20);
     
-    private JTable productsTable;
+    public JTable productsTable;
     
     private JButton logoutButton = new JButton("Log out");
     private JButton buyButton = new JButton("Buy");
@@ -42,11 +43,11 @@ public class MainBuyMenuView extends JFrame implements Observer{
     private JButton quitButton = new JButton("Quit");
     
     public MainBuyMenuView(){
-        //currentStage = ProgramStage.MAINMENU;which is mainmenu?
+        
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(680, 550);
         this.setResizable(false);
-        //this.model = model;
+        
         showMainBuyMenu();
         this.setVisible(true);
     }
@@ -64,7 +65,7 @@ public class MainBuyMenuView extends JFrame implements Observer{
         buyPanel.add(purchaseHistoryButton);
         buyPanel.add(quitButton);
         
-        String[][] productContent = ShopModel.getProductInfo().toArray(new String[0][0]);
+        String[][] productContent = ShopModel.getOnSaleProduct().toArray(new String[0][0]);
         String[] column = {"productName", "price", "description"};
         DefaultTableModel tableModel = new DefaultTableModel(){
             @Override
@@ -72,8 +73,10 @@ public class MainBuyMenuView extends JFrame implements Observer{
                return false;
             }
         };
+        
         tableModel.setDataVector(productContent, column);
         productsTable = new JTable(tableModel);
+        productsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         buyPanel.add(new JScrollPane(productsTable));
         
         buyPanel.add(info);
@@ -101,7 +104,7 @@ public class MainBuyMenuView extends JFrame implements Observer{
     }
     
     public void refreshProductsTable(){
-        String[][] productContent = ShopModel.getProductInfo().toArray(new String[0][0]);
+        String[][] productContent = ShopModel.getOnSaleProduct().toArray(new String[0][0]);
         DefaultTableModel tableModel = (DefaultTableModel)productsTable.getModel();
         String[] column = {"productName", "price", "description"};
         tableModel.setDataVector(productContent, column);
@@ -119,12 +122,6 @@ public class MainBuyMenuView extends JFrame implements Observer{
         this.info.setText(message);
     }
     
-    
-//    public static void main(String[] args) {
-//        ShopModel model = new ShopModel();
-//        MainMenuView v = new MainMenuView();
-//    }
-
     /**
      * @return the userName
      */

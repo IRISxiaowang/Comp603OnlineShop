@@ -12,8 +12,8 @@ package newonlineshop;
 public class UserBuyer extends User {
     private double moneySpent;
     
-    public UserBuyer(int userID, String username, String password, String name, String address, String phone, String email, String bankAccount) {
-        super(userID, username, password, name, address, phone, email, bankAccount, Role.BUYER, 0);
+    public UserBuyer(int userID, String username, String password, String name, String address, String phone, String email, String bankAccount, double balance) {
+        super(userID, username, password, name, address, phone, email, bankAccount, Role.BUYER, balance);
         moneySpent = 0;
     }
     

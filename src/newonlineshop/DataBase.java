@@ -19,17 +19,21 @@ import java.util.logging.Logger;
  * @author xiaowang
  */
 public class DataBase {
-
     Connection conn = null;
-    String url = "jdbc:derby:OnlineShopDB;create=true";
+    String url = "jdbc:derby:OnlineShopDB;create=true;";
     String dbusername = "pdc";
     String dbpassword = "pdc";
     public final String USER_TABLE_NAME = "ShopUser";
     public final String PRODUCT_TABLE_NAME = "Product";
     public final String TRANSACTION_TABLE_NAME = "ProductTransaction";
-    public void dbsetup() {
+    
+    public void dbsetup(){
+        dbsetup(url);
+    }
+    
+    public void dbsetup(String dbUrl) {
         try {
-            conn = DriverManager.getConnection(url, dbusername, dbpassword);
+            conn = DriverManager.getConnection(dbUrl, dbusername, dbpassword);
             if (!checkTableExisting(USER_TABLE_NAME)) {
                 executeSqlUpdate("CREATE TABLE " + USER_TABLE_NAME + " (userId INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), username VARCHAR(30), password VARCHAR(30), name VARCHAR(30), bankaccount VARCHAR(30), address VARCHAR(30), phone VARCHAR(30), email VARCHAR(30), role INT, balance DOUBLE)");
             }
@@ -88,9 +92,9 @@ public class DataBase {
                                 rs.getString("address"),
                                 rs.getString("phone"),
                                 rs.getString("email"),
-                                rs.getString("bankaccount")
+                                rs.getString("bankaccount"),
+                                rs.getDouble("balance")
                         );
-                        user.balance = rs.getDouble("balance");
                     } else if (role == 1) {
                         user = new UserSeller(
                                 rs.getInt("userid"),
@@ -100,9 +104,9 @@ public class DataBase {
                                 rs.getString("address"),
                                 rs.getString("phone"),
                                 rs.getString("email"),
-                                rs.getString("bankaccount")
+                                rs.getString("bankaccount"),
+                                rs.getDouble("balance")
                         );
-                        user.balance = rs.getDouble("balance");
                     }
                     rs.close();
                     return user;
@@ -146,21 +150,8 @@ public class DataBase {
         }
         return false;
     }
-     
-    public boolean isProductSold(int productID) {
-        String query = "SELECT username FROM " + TRANSACTION_TABLE_NAME + " WHERE productID = '" + productID + "'";
-        ResultSet rs = executeSqlQuery(query);
-        try {
-            boolean isProductSold = rs.next();
-            rs.close();
-            return isProductSold;
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-        return false;
-    }
-    
-    public void insertDB(User user) {
+         
+    public void insertUserDB(User user) {
         // username , password, name, bankaccount, address, phone, email, role
         executeSqlUpdate("INSERT INTO " + USER_TABLE_NAME
                 + " (username, password, name, bankaccount, address, phone, email, role)"
@@ -178,11 +169,10 @@ public class DataBase {
        //TRANSACTION_TABLE_NAME + " (productID INT, buyerId INT, buyerAccount VARCHAR(30), sellerId INT, sellerAccount VARCHAR(30), date DATE)");
  
         executeSqlUpdate("INSERT INTO " + TRANSACTION_TABLE_NAME
-             //   + " (userId, productName, price, description)"
-                + " VALUES ('" + transaction.getProductID() +"', '" + transaction.getBuyerID() + "', '" + transaction.getBuyerAccount() + "', '"  + transaction.getSellerID()+ "', '"  + transaction.getSellerAccount() + "', " + transaction.getDate() + ")");
+                + " VALUES (" + transaction.getProductID() +", " + transaction.getBuyerID() + ", '" + transaction.getBuyerAccount() + "', "  + transaction.getSellerID()+ ", '"  + transaction.getSellerAccount() + "', '" + transaction.getDate().toString() + "')");
     }
      //WHERE   phone_number NOT IN (SELECT phone_number FROM Phone_book)
-    public ArrayList<String[]> productInfo(User user){
+    public ArrayList<String[]> onSaleProduct(){
         String query = "SELECT * FROM " + PRODUCT_TABLE_NAME + " WHERE productID NOT IN ( SELECT productID FROM ProductTransaction)";
         ArrayList<String[]> res = new ArrayList<>();
         try {
@@ -197,7 +187,7 @@ public class DataBase {
         return res;
     }
     public ArrayList<String[]> searchProductDB(String search){
-        String query = "SELECT * FROM " +PRODUCT_TABLE_NAME+ " WHERE productName LIKE '%"+search+"%' ";
+        String query = "SELECT * FROM " +PRODUCT_TABLE_NAME+ " WHERE productName LIKE '%"+search+"%' AND productID NOT IN ( SELECT productID FROM ProductTransaction)";
          ArrayList<String[]> res = new ArrayList<>();
         try {
             ResultSet rs = executeSqlQuery(query);
@@ -210,20 +200,81 @@ public class DataBase {
         }
         return res;
     }
-//    public ArrayList<String[]> transactionInfo(User user){
-//        String query = "SELECT * FROM " + PRODUCT_TABLE_NAME + " WHERE productID NOT IN ( SELECT productID FROM TRANSACTION_TABLE_NAME)";
-//        ArrayList<String[]> res = new ArrayList<>();
-//        try {
-//            ResultSet rs = executeSqlQuery(query);
-//            while(rs.next()) {
-//                String[] row = {rs.getString("productName"), rs.getString("price"), rs.getString("description")};
-//                res.add(row);
-//            }
-//            } catch (SQLException e) {
-//            System.out.println(e);
-//        }
-//        return res;
-//    }
+
+     public ArrayList<String[]> transactionBuyerInfo(int userID){
+        String query = "SELECT productName, description, price, username, date FROM " 
+                +PRODUCT_TABLE_NAME+" JOIN "+TRANSACTION_TABLE_NAME
+                +" ON "+PRODUCT_TABLE_NAME+".productID = "+TRANSACTION_TABLE_NAME+".productID"
+                + " JOIN "+USER_TABLE_NAME
+                +" ON "+TRANSACTION_TABLE_NAME+".sellerId = "+USER_TABLE_NAME+".userId"
+                +" WHERE buyerId = "+userID;
+        ArrayList<String[]> res = new ArrayList<>();
+        try {
+            ResultSet rs = executeSqlQuery(query);
+            while(rs.next()) {
+                String[] row = {rs.getString("productName"), rs.getString("description"), rs.getString("price"), rs.getString("username"), rs.getString("date")};
+                res.add(row);
+            }
+            } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return res;
+    }
+      public ArrayList<String[]> transactionSellerInfo(int userID){
+        String query = "SELECT productName, description, price, username, date FROM " 
+                +PRODUCT_TABLE_NAME+" JOIN "+TRANSACTION_TABLE_NAME
+                +" ON "+PRODUCT_TABLE_NAME+".productID = "+TRANSACTION_TABLE_NAME+".productID"
+                + " JOIN "+USER_TABLE_NAME
+                +" ON "+TRANSACTION_TABLE_NAME+".buyerId = "+USER_TABLE_NAME+".userId"
+                +" WHERE sellerId = "+userID;
+        ArrayList<String[]> res = new ArrayList<>();
+        try {
+            ResultSet rs = executeSqlQuery(query);
+            while(rs.next()) {
+                String[] row = {rs.getString("productName"), rs.getString("description"), rs.getString("price"), rs.getString("username"), rs.getString("date")};
+                res.add(row);
+            }
+            } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return res;
+    }
+
+    public Product getProduct(String productName){
+        String query = "SELECT * FROM " +PRODUCT_TABLE_NAME+ " WHERE productName = '"+ productName +"'";
+        Product soldProduct = null;
+        try {
+            ResultSet rs = executeSqlQuery(query);
+            while(rs.next()) {
+                soldProduct = new Product(rs.getInt("productID"), rs.getInt("userId"), rs.getString("productName"), rs.getDouble("price"), rs.getString("description"));
+                
+            }
+            } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return soldProduct;
+    }
+    
+    public UserSeller getProductSeller(String productName){
+        String query = "SELECT * FROM " +PRODUCT_TABLE_NAME+ " WHERE productName = '"+ productName +"'";
+        int ownerId = 0; 
+        UserSeller owner = null;
+        try {
+            ResultSet rs = executeSqlQuery(query);
+            if(rs.next()) {
+                ownerId = rs.getInt("userId");    
+            }
+            String queryUser = "SELECT * FROM " +USER_TABLE_NAME+ " WHERE userId = "+ ownerId;
+            ResultSet rsUser = executeSqlQuery(queryUser);
+            if(rsUser.next()) {
+                owner = new UserSeller(ownerId, rsUser.getString("username"), rsUser.getString("password"), rsUser.getString("name"), rsUser.getString("address"), rsUser.getString("phone"), rsUser.getString("email"), rsUser.getString("bankaccount"), rsUser.getDouble("balance"));    
+            }
+            } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return owner;
+    }
+
     public void executeSqlUpdate(String command) {
         System.out.print("SQL Command: <" + command + ">");
 
@@ -250,18 +301,4 @@ public class DataBase {
         }
         return rs;
     }
-
-//  void quitDB(String username, int score) {
-//
-//        Statement statement;
-//        try {
-//            statement = conn.createStatement();
-//            statement.executeUpdate("UPDATE UserInfo SET score=" + score + " WHERE userid='" + username + "'");
-//            System.out.println(username + score);
-//            
-//        } catch (SQLException ex) {
-//            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-//    }
 }

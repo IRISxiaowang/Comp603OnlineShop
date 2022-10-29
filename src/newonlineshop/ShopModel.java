@@ -14,7 +14,6 @@ import java.util.Observable;
 public class ShopModel extends Observable{
     private static DataBase db;
     private static User currentUser;
-    //private Product product;
     
     public ShopModel(){
         this.db = new DataBase();
@@ -26,17 +25,26 @@ public class ShopModel extends Observable{
     }
     public ArrayList<String[]> searchProduct(String search){
         if(search.length() == 0){
-            return getProductInfo();
+            return getOnSaleProduct();
         } else {
             return db.searchProductDB(search);
         }
     }
+    
+    public Product getProduct(String productName){
+        return db.getProduct(productName);
+    }
+    
+    public UserSeller getProductOwner(String productName){
+        return db.getProductSeller(productName);
+    }
+    
     public User getCurrentUser(){
         return currentUser;
     }
     
     public void registerNewUser(User user){
-        db.insertDB(user);
+        db.insertUserDB(user);
     }
     
     public void login(String username, String password){
@@ -47,8 +55,16 @@ public class ShopModel extends Observable{
         return db.hasUser(username);
     }
     
-    public static ArrayList<String[]> getProductInfo(){
-        return db.productInfo(currentUser);
+    public static ArrayList<String[]> getOnSaleProduct(){
+        return db.onSaleProduct();
+    }
+    
+    public static ArrayList<String[]> getBuyerHistoryInfo(){
+        return db.transactionBuyerInfo(currentUser.userID);
+    }
+    
+    public static ArrayList<String[]> getSellerHistoryInfo(){
+        return db.transactionSellerInfo(currentUser.userID);
     }
     
     public boolean hasProduct(String productName){
@@ -61,10 +77,6 @@ public class ShopModel extends Observable{
     
     public void addTransaction(Transaction transaction){
         db.insertTransactionDB(transaction);
-    }
-    
-    public boolean isProductSold(int productID){
-        return db.isProductSold(productID);
     }
 }
 

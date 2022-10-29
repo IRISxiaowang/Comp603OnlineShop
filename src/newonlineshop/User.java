@@ -8,7 +8,7 @@ package newonlineshop;
  *
  * @author xiaowang
  */
-    enum Role {
+enum Role {
     BUYER,
     SELLER;
     
@@ -41,9 +41,9 @@ public abstract class User {
 
     public User(int userID, String username, String password, String name, String address, String phone, String email, String bankAccount, Role role, double balance) {
         this.userID = userID;
-        this.username = username;   //Winter: This is username for login
+        this.username = username;   
         this.password = password;
-        this.name = name;           //Winter: This is real name
+        this.name = name;           
         this.address = address;
         this.phone = phone;
         this.email = email;

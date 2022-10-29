@@ -23,8 +23,7 @@ import javax.swing.table.TableModel;
  * @author xiaowang
  */
 public class MainSellMenuView extends JFrame implements Observer{
-     ProgramStage currentStage;
-    //ShopModel model;
+    ProgramStage currentStage;
     
     private JPanel sellPanel = new JPanel();
     private JLabel userName = new JLabel();
@@ -39,15 +38,12 @@ public class MainSellMenuView extends JFrame implements Observer{
     private JButton logoutButton = new JButton("Log out");
     private JButton sellButton = new JButton("Sell");
     private JButton sellHistoryButton = new JButton("Sell History");
-    //private JButton rechargeBalanceButton = new JButton("Recharge Balance");
     private JButton quitButton = new JButton("Quit");
     
     public MainSellMenuView(){
-        //currentStage = ProgramStage.MAINMENU;which is mainmenu?
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(680, 550);
         this.setResizable(false);
-        //this.model = model;
         showMainSellMenu();
         this.setVisible(true);
     }
@@ -61,12 +57,11 @@ public class MainSellMenuView extends JFrame implements Observer{
         sellPanel.add(logoutButton);
         sellPanel.add(sellButton);
         sellPanel.add(getCurrentBalance());
-       // sellPanel.add(rechargeBalanceButton);
         
         sellPanel.add(sellHistoryButton);
         sellPanel.add(quitButton);
         
-        String[][] productContent = ShopModel.getProductInfo().toArray(new String[0][0]);
+        String[][] productContent = ShopModel.getOnSaleProduct().toArray(new String[0][0]);
         String[] column = {"productName", "price", "description"};
         DefaultTableModel tableModel = new DefaultTableModel(){
             @Override
@@ -82,11 +77,11 @@ public class MainSellMenuView extends JFrame implements Observer{
         
         this.add(sellPanel);
         sellPanel.setVisible(true);
-        //this.setVisible(true);
+        
     }
     
     public void refreshProductsTable(){
-        String[][] productContent = ShopModel.getProductInfo().toArray(new String[0][0]);
+        String[][] productContent = ShopModel.getOnSaleProduct().toArray(new String[0][0]);
         DefaultTableModel tableModel = (DefaultTableModel)productsTable.getModel();
         String[] column = {"productName", "price", "description"};
         tableModel.setDataVector(productContent, column);

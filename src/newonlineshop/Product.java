@@ -15,13 +15,11 @@ public class Product {
     public final String productName;
     public final double price;
     public final int userID;
-//    private OptionalInt buyerID;
     public final String description;
      
     public Product(int productID, int userID, String productName, double price, String description) {// OptionalInt buyerID,
         
         this.userID = userID;
-//        this.buyerID = buyerID;
         this.productID = productID;
         this.productName = productName;
         this.price = price;

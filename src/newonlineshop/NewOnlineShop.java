@@ -17,8 +17,7 @@ public class NewOnlineShop {
         ShopModel model = new ShopModel();
         ShopView view = new ShopView();
         
-        ShopController controller = new ShopController(model, view);//, menuView);
-        //MainMenuView menuView = new MainMenuView();
+        ShopController controller = new ShopController(model, view);
         model.addObserver(view);
     }
     

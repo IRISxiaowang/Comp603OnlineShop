@@ -11,8 +11,8 @@ package newonlineshop;
 public class UserSeller extends User {
     public int starRating;
     
-    public UserSeller(int userID, String username, String password, String name, String address, String phone, String email, String bankAccount ) {
-        super(userID, username, password, name, address, phone, email, bankAccount, Role.SELLER, 0);
+    public UserSeller(int userID, String username, String password, String name, String address, String phone, String email, String bankAccount, double balance ) {
+        super(userID, username, password, name, address, phone, email, bankAccount, Role.SELLER, balance);
         starRating = 0;
     }
     

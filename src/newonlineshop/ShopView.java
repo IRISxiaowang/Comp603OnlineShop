@@ -40,7 +40,7 @@ public class ShopView extends JFrame implements Observer{
     public JTextField rnInput = new JTextField(20);
     private JLabel bankAccount = new JLabel("Bank Account: ");
     public JTextField baInput = new JTextField(20);
-    //private JLabel registerInfo = new JLabel(" ");
+ 
     private final String[] s = {"Buyer", "Seller"};
     
     private JLabel addressLabel = new JLabel(" Address: ");
@@ -68,6 +68,7 @@ public class ShopView extends JFrame implements Observer{
         currentStage = ProgramStage.LOGIN;
         unInput.setText("");
         pwInput.setText("");
+        info.setText("");
         
         userPanel.add(uName);
         userPanel.add(unInput);
@@ -94,6 +95,7 @@ public class ShopView extends JFrame implements Observer{
         addressInput.setText("");
         phoneInput.setText("");
         emailInput.setText("");
+        info.setText("");
         
         registerPanel.add(uName);
         registerPanel.add(unInput);

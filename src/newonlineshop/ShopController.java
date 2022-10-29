@@ -7,7 +7,9 @@ package newonlineshop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -21,6 +23,8 @@ public class ShopController implements ActionListener {
     MainSellMenuView sellMenuView;
     AddProductView addProductView;
     RechargeView rechargeView;
+    PurchaseHistoryView buyHistoryView;
+    SellHistoryView sellHistoryView;
 
     public ShopController(ShopModel model, ShopView view) {
         this.model = model;
@@ -35,7 +39,14 @@ public class ShopController implements ActionListener {
             case "Log in":
                 String username = view.unInput.getText();
                 String password = view.pwInput.getText();
-                model.login(username, password);
+                if(username.contains("'")){
+                    view.updateMessage("Username cannot contain \" ' \".");
+                    
+                }else if(password.contains("'")){
+                    view.updateMessage("Password cannot contain \" ' \".");
+                }else{ 
+                    model.login(username, password);
+                }
                 if (model.getCurrentUser() == null) {
                     view.updateMessage("Login failed. Incorrect Username or password.");
                 } else {
@@ -73,7 +84,8 @@ public class ShopController implements ActionListener {
                                 view.addressInput.getText(),
                                 view.phoneInput.getText(),
                                 view.emailInput.getText(),
-                                view.baInput.getText()
+                                view.baInput.getText(),
+                                0
                         );
 
                     } else if (role == 1) {
@@ -85,7 +97,8 @@ public class ShopController implements ActionListener {
                                 view.addressInput.getText(),
                                 view.phoneInput.getText(),
                                 view.emailInput.getText(),
-                                view.baInput.getText()
+                                view.baInput.getText(),
+                                0
                         );
                     }
                     // Check if data is valid
@@ -105,20 +118,35 @@ public class ShopController implements ActionListener {
                 if (model.getCurrentUser().role == Role.BUYER) {
                     buyMenuView.setVisible(false);
                 }
+                if(buyHistoryView != null && buyHistoryView.isActive()){
+                    buyHistoryView.setVisible(false);
+                }
+                if(sellHistoryView != null && sellHistoryView.isActive()){
+                    sellHistoryView.setVisible(false);
+                }
                 view.setVisible(true);
                 view.showLoginMenu();
                 view.updateMessage(" ");
                 break;
             case "Purchase History":
-                //callbuy history
+                if (model.getCurrentUser().role == Role.BUYER) {
+                    buyMenuView.setVisible(false);
+                }
+                buyHistoryView = new PurchaseHistoryView();
+                buyHistoryView.addActionListener(this);
+                buyHistoryView.getUserName().setText("Hello < " + model.getCurrentUser().username + " >");
+                buyHistoryView.setVisible(true);
                 break;
             case "Sell History":
-                //call sell history
+                if (model.getCurrentUser().role == Role.SELLER) {
+                    sellMenuView.setVisible(false);
+                }
+                sellHistoryView = new SellHistoryView();
+                sellHistoryView.addActionListener(this);
+                sellHistoryView.getUserName().setText("Hello < " + model.getCurrentUser().username + " >");
+                sellHistoryView.setVisible(true);
                 break;
             case "Recharge Balance":
-//                if (model.getCurrentUser().role == Role.SELLER) {
-//                    sellMenuView.setVisible(false);
-//                }
                 if (model.getCurrentUser().role == Role.BUYER) {
                     buyMenuView.setVisible(false);
                 }
@@ -128,6 +156,11 @@ public class ShopController implements ActionListener {
                 break;
             case "Buy":
                 // buy add product to buyid and reduce the money from bankaccont
+                int row = buyMenuView.productsTable.getSelectedRow();
+                if(row != -1){
+                    String selectedProductName = (String) buyMenuView.productsTable.getValueAt(row, 0);
+                    buy(selectedProductName);
+                }
                 break;
             case "Sell":
                 sellMenuView.setVisible(false);
@@ -138,12 +171,21 @@ public class ShopController implements ActionListener {
             case "Back to sell menu":
                 sellMenuView.refreshProductsTable();
                 addProductView.setVisible(false);
-                //rechargeView.setVisible(false);
+                sellMenuView.setVisible(true);
+                break;
+            case "Back to sell":
+                sellMenuView.refreshProductsTable();
+                sellHistoryView.setVisible(false);
                 sellMenuView.setVisible(true);
                 break;
             case "Back to buy menu":
                 buyMenuView.refreshProductsTable();
                 rechargeView.setVisible(false);
+                buyMenuView.setVisible(true);
+                break;
+            case "Back to buy":
+                buyMenuView.refreshProductsTable();
+                buyHistoryView.setVisible(false);
                 buyMenuView.setVisible(true);
                 break;
             case "Add product":
@@ -189,13 +231,16 @@ public class ShopController implements ActionListener {
 
             case "Search":
                 if (model.getCurrentUser().role == Role.SELLER) {
+                    if(sellMenuView.isActive()){
                     ArrayList<String[]> search = model.searchProduct(sellMenuView.searchInput.getText());
                     sellMenuView.refreshSearchTable(search);
-
+                    }                    
                 }
                 if (model.getCurrentUser().role == Role.BUYER) {
-                    ArrayList<String[]> search = model.searchProduct(buyMenuView.searchInput.getText());
-                    buyMenuView.refreshSearchTable(search);
+                    if(buyMenuView.isActive()){
+                        ArrayList<String[]> search = model.searchProduct(buyMenuView.searchInput.getText());
+                        buyMenuView.refreshSearchTable(search);
+                    }
                 }
                 break;
             case "Quit":
@@ -213,15 +258,34 @@ public class ShopController implements ActionListener {
             view.showLoginMenu();
         }
     }
+    
+    private void buy(String productName) {
+        Product soldProduct = model.getProduct(productName);
+        UserSeller owner = model.getProductOwner(productName);
+       
+        if(model.getCurrentUser().userID == owner.userID){
+            buyMenuView.updateMessage("Please choose other products, you cannot buy from yourself.");
+        }
+        
+        if(model.getCurrentUser().balance < soldProduct.price){
+            buyMenuView.updateMessage("Please recharge your account first, money is not enough.");
+        }else{
+            LocalDate date = LocalDate.now();
+            Transaction newTransaction = new Transaction(soldProduct.productID, model.getCurrentUser().userID, model.getCurrentUser().bankAccount, owner.userID, owner.bankAccount, date);
+            model.addTransaction(newTransaction);
+            double newBuyerBalance = model.getCurrentUser().balance - soldProduct.price;
+            model.updateUserBalance(model.getCurrentUser().userID, newBuyerBalance);
+            model.getCurrentUser().balance = newBuyerBalance;
+            buyMenuView.updateBalance(newBuyerBalance);
+            buyMenuView.refreshProductsTable();
+            double newSellerBalance = owner.balance + soldProduct.price;
+            model.updateUserBalance(owner.userID, newSellerBalance);
+           
+        }
+    }
 
-//    public void addNewProduct(Product product) {
-//        if (model.hasProduct(product.productName)) {
-//            addProductView.updateMessage("Add product failed. Product aready exists.");
-//        } else {
-//            model.addProduct(product);
-//            addProductView.updateMessage("Add product successful.");
-//        }
-//    }
+
+
     public boolean isRechargeDataValid() {
 
         if (rechargeView.amountInput.getText().trim().length() == 0) {
@@ -229,23 +293,48 @@ public class ShopController implements ActionListener {
             return false;
         }
 
+        if (rechargeView.amountInput.getText().trim().contains("'")) {
+            rechargeView.updateMessage("Amount cannot contain \" ' \".");
+            return false;
+        }
+        
         if (rechargeView.expiryInput.getText().trim().length() == 0) {
             rechargeView.updateMessage("Expiry cannot be empty.");
             return false;
         }
 
+        if (rechargeView.expiryInput.getText().trim().contains("'")) {
+            rechargeView.updateMessage("Expiry cannot contain \" ' \".");
+            return false;
+        }
+        
         if (rechargeView.CVVInput.getText().trim().length() == 0) {
             rechargeView.updateMessage("CVV cannot be empty.");
             return false;
         }
 
+        if (rechargeView.CVVInput.getText().trim().contains("'")) {
+            rechargeView.updateMessage("CVV cannot contain \" ' \".");
+            return false;
+        }
+        
         if (rechargeView.cardNumberInput.getText().trim().length() == 0) {
             rechargeView.updateMessage("Card Number cannot be empty.");
             return false;
         }
 
+        if (rechargeView.cardNumberInput.getText().trim().contains("'")) {
+            rechargeView.updateMessage("Card Number cannot contain \" ' \".");
+            return false;
+        }
+        
         if (rechargeView.holderNameInput.getText().trim().length() == 0) {
             rechargeView.updateMessage("Holder Name cannot be empty.");
+            return false;
+        }
+        
+        if (rechargeView.holderNameInput.getText().trim().contains("'")) {
+            rechargeView.updateMessage("Holder Name cannot contain \" ' \".");
             return false;
         }
         try {
@@ -267,9 +356,17 @@ public class ShopController implements ActionListener {
             addProductView.updateMessage("Product name cannot be empty.");
             return false;
         }
+        if (product.productName.trim().contains("'")) {
+            addProductView.updateMessage("Product name cannot contain \" ' \".");
+            return false;
+        }
 
         if (product.description.trim().length() == 0) {
             addProductView.updateMessage("Product description cannot be empty.");
+            return false;
+        }
+        if (product.description.trim().contains("'")) {
+            addProductView.updateMessage("Product description cannot contain \" ' \".");
             return false;
         }
 
@@ -285,6 +382,10 @@ public class ShopController implements ActionListener {
         // Check password
         if (user.username.trim().length() == 0) {
             view.updateMessage("Username cannot be empty.");
+            return false;
+        }
+        if (user.username.trim().contains("'")) {
+            view.updateMessage("Username cannot contain \" ' \".");
             return false;
         }
         // No white space
@@ -306,6 +407,11 @@ public class ShopController implements ActionListener {
             view.updateMessage("Password cannot be empty.");
             return false;
         }
+        
+        if (user.password.trim().contains("'")) {
+            view.updateMessage("Password cannot contain \" ' \".");
+            return false;
+        }
         // No white space
         if (user.password.contains(" ")) {
             view.updateMessage("The password cannot contain whitespace, try again.\n");
@@ -325,6 +431,11 @@ public class ShopController implements ActionListener {
             view.updateMessage("Name cannot be empty.");
             return false;
         }
+        
+        if (user.name.trim().contains("'")) {
+            view.updateMessage("Name cannot contain \" ' \".");
+            return false;
+        }
         // Too long
         if (user.name.length() > 128) {
             view.updateMessage("Name too long, max of 128 characters, try again.\n");
@@ -334,6 +445,11 @@ public class ShopController implements ActionListener {
             view.updateMessage("Address cannot be empty.");
             return false;
         }
+        
+        if (user.address.trim().contains("'")) {
+            view.updateMessage("Address cannot contain \" ' \".");
+            return false;
+        }
         // Too long
         if (user.address.length() > 512) {
             view.updateMessage("Address too long, max of 512 characters, try again.\n");
@@ -341,6 +457,11 @@ public class ShopController implements ActionListener {
         }
         if (user.phone.trim().length() == 0) {
             view.updateMessage("Phone cannot be empty.");
+            return false;
+        }
+        
+        if (user.phone.trim().contains("'")) {
+            view.updateMessage("Phone cannot contain \" ' \".");
             return false;
         }
         // Too long
@@ -357,8 +478,17 @@ public class ShopController implements ActionListener {
             view.updateMessage("Email cannot be empty.");
             return false;
         }
+        
+        if (user.email.trim().contains("'")) {
+            view.updateMessage("Email cannot contain \" ' \".");
+            return false;
+        }
         if (user.bankAccount.trim().length() == 0) {
             view.updateMessage("Bank account cannot be empty.");
+            return false;
+        }
+        if (user.bankAccount.trim().contains("'")) {
+            view.updateMessage("Bank account cannot contain \" ' \".");
             return false;
         }
         // Too long

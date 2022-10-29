@@ -4,7 +4,7 @@
  */
 package newonlineshop;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  *
@@ -17,10 +17,9 @@ public class Transaction {
     private int sellerID;
     private String buyerAccount;
     private String sellerAccount;
-    private Date date;
-//productID INT, buyerId INT, buyerAccount VARCHAR(30), sellerId INT, sellerAccount VARCHAR(30), date DATE)");
+    private LocalDate date;
 
-    public Transaction(int productID, int buyerId, String buyerAccount, int sellerId, String sellerAccount, Date date){
+    public Transaction(int productID, int buyerId, String buyerAccount, int sellerId, String sellerAccount, LocalDate date){
         this.buyerAccount = buyerAccount;
         this.buyerID = buyerId;
         this.date = date;
@@ -67,7 +66,7 @@ public class Transaction {
     /**
      * @return the date
      */
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
             
