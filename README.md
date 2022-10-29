@@ -17,16 +17,22 @@ Register a new user. You can choose the new user will be a buyer or seller.
 
 ### Buyer menu
 In the buyer menu, all items on sale are displayed. (Sold items are hidden)
+
 **Buy:** add item into purchase history (Transaction records) and transfer payment from buyer balance to seller balance.
+
 **Search:** Filter products from product table if productName contains search string.
+
 **Recharge:** increase balance from by using a credit card. (This is a mock credit card payment page and will always succeed.)
+
 **Purchase history:** Shows all items the current buyer has purchased. 
 
 ### Seller menu
 In the Seller menu, all items currently on sale are displayed. The seller can better decide what price they should sell their items.
 
 **Sell:** All a new Product to sell. This adds the item into the products table.
+
 **Search:** Filter products from product table if productName contains search string.
+
 **Sell history:** Shows all the items that the current seller has sold.
 
 ## Marking
@@ -39,8 +45,11 @@ Error messages are displayed if input does not meet requirement.
 All database related code can be found in Database.java
 
 There are 3 database tables: ShopUser, Product, ProductTransaction
+
 **ShopUser:** Contains information on Users, including username, password, Role(buyer/seller) etc.
+
 **Product:** Contains information on all existing products, including ProductName, productId, price, sellerId etc.
+
 **ProductTransaction**: Contains transaction for selling a product. Include sellerId, buyerId, productId, date etc.
 
 Products on sale are products NOT IN the productTransaction table.
@@ -94,5 +103,4 @@ Unit test framework was used. Database was the class used for the unit tests.
 14 tests are written. Each tests contains one or more test cases.
 Mock database is used for test to not effect the production database. 
 Mock database is cleared at the beginning of the tests, with controlled test data put in to ensure unit tests are done in a controlled manner. All functions in the Database class is tested.
-
 
