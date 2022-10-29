@@ -34,6 +34,7 @@ public class ShopView extends JFrame implements Observer{
     private JButton registerButton = new JButton("Register");
     private JButton loginButton = new JButton("Log in");
     private JButton quitButton = new JButton("Quit");
+    private JButton cancelButton = new JButton("Cancel");
     
     private JPanel registerPanel = new JPanel();
     private JLabel rName = new JLabel("    Name: ");
@@ -117,7 +118,7 @@ public class ShopView extends JFrame implements Observer{
          
         registerPanel.add(role);
         registerPanel.add(registerButton);
-        quitButton.setText("Cancel");
+        registerPanel.add(cancelButton);
         registerPanel.add(quitButton);
         registerPanel.add(info);
         
@@ -134,6 +135,7 @@ public class ShopView extends JFrame implements Observer{
         this.registerButton.addActionListener(listener);
         this.loginButton.addActionListener(listener);
         this.quitButton.addActionListener(listener);
+        this.cancelButton.addActionListener(listener);
     }
     
     @Override
