@@ -6,8 +6,6 @@ package newonlineshop;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,10 +17,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * Contains the main menu view for Buyers.
  * @author xiaowang
  */
-public class MainBuyMenuView extends JFrame implements Observer{
+public class MainBuyMenuView extends JFrame{
     ProgramStage currentStage;
    
     
@@ -51,6 +49,8 @@ public class MainBuyMenuView extends JFrame implements Observer{
         showMainBuyMenu();
         this.setVisible(true);
     }
+    
+    /// Sets up the GUI
     public void showMainBuyMenu(){
         currentStage = ProgramStage.SHOPMENUBUY;
         buyPanel.add(getUserName());
@@ -86,8 +86,8 @@ public class MainBuyMenuView extends JFrame implements Observer{
         //this.setVisible(true);
     }
     
-   
-    public void addActionListener(ActionListener listener){//****controller switch to different action 
+    /// Sets action listener for all elements
+    public void addActionListener(ActionListener listener){
         this.rechargeBalanceButton.addActionListener(listener);
         this.purchaseHistoryButton.addActionListener(listener);
         this.quitButton.addActionListener(listener);
@@ -96,6 +96,7 @@ public class MainBuyMenuView extends JFrame implements Observer{
         this.search.addActionListener(listener);
     }
     
+    /// Asks model to provide search results.
     public void refreshSearchTable(ArrayList<String[]> search){
         String[][] productContent = search.toArray(new String[0][0]);
         DefaultTableModel tableModel = (DefaultTableModel)productsTable.getModel();
@@ -103,6 +104,7 @@ public class MainBuyMenuView extends JFrame implements Observer{
         tableModel.setDataVector(productContent, column);
     }
     
+    /// Asks the model to provide latest products on sale.
     public void refreshProductsTable(){
         String[][] productContent = ShopModel.getOnSaleProduct().toArray(new String[0][0]);
         DefaultTableModel tableModel = (DefaultTableModel)productsTable.getModel();
@@ -110,14 +112,12 @@ public class MainBuyMenuView extends JFrame implements Observer{
         tableModel.setDataVector(productContent, column);
     }
     
+    /// Updates user balance displayed
     public void updateBalance(double balance) {
         currentBalance.setText("Current balance < "+String.valueOf(balance)+" >");
     }
-    @Override
-    public void update(Observable o, Object arg) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     
+    /// Updates user message
     public void updateMessage(String message) {
         this.info.setText(message);
     }

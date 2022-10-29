@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- *
+ * This class contains the view for adding a new product.
  * @author xiaowang
  */
 public class AddProductView extends JFrame  {
@@ -30,6 +30,7 @@ public class AddProductView extends JFrame  {
     private JButton addProductButton = new JButton("Add product");
     
     public AddProductView(){
+        // Display the current view.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(680, 200);
         this.setResizable(false);
@@ -63,6 +64,8 @@ public class AddProductView extends JFrame  {
         this.addProductButton.addActionListener(listener);
         this.toSellerButton.addActionListener(listener);
     }
+    
+    // for displaying error message to the user.
     public void updateMessage(String message) {
         this.info.setText(message);
     }

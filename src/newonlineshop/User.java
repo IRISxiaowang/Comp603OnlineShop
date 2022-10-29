@@ -5,7 +5,7 @@
 package newonlineshop;
 
 /**
- *
+ * This class represents a User parent class (abstract)
  * @author xiaowang
  */
 enum Role {

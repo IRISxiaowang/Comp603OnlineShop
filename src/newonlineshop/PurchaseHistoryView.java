@@ -5,25 +5,19 @@
 package newonlineshop;
 
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * View for displaying purchase history
  * @author xiaowang
  */
 public class PurchaseHistoryView extends JFrame {
-
-    
     private JPanel buyHistoryPanel = new JPanel();
     private JLabel userName = new JLabel();
     
@@ -34,13 +28,14 @@ public class PurchaseHistoryView extends JFrame {
     private JButton quitButton = new JButton("Quit");
     
     public PurchaseHistoryView(){
-       
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(680, 550);
         this.setResizable(false);
         showBuyHistoryMenu();
         this.setVisible(true);
     }
+    
+    /// Sets up the GUI
     public void showBuyHistoryMenu(){
         
         buyHistoryPanel.add(getUserName());
@@ -73,6 +68,7 @@ public class PurchaseHistoryView extends JFrame {
         this.bactToBuyButton.addActionListener(listener);
     }
     
+    /// Gets the purchase history data and fill the data table.
     public void refreshProductsTable(){
         String[][] productContent = ShopModel.getBuyerHistoryInfo().toArray(new String[0][0]);
         DefaultTableModel tableModel = (DefaultTableModel)transactionTable.getModel();
@@ -86,7 +82,5 @@ public class PurchaseHistoryView extends JFrame {
     public JLabel getUserName() {
         return userName;
     }
-
-
 }
 

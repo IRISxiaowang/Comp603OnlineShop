@@ -5,7 +5,7 @@
 package newonlineshop;
 
 /**
- *
+ * Main entry class. Creates the Model, Controller and Views.
  * @author xiaowang
  */
 public class NewOnlineShop {
@@ -16,9 +16,7 @@ public class NewOnlineShop {
     public static void main(String[] args) {
         ShopModel model = new ShopModel();
         ShopView view = new ShopView();
-        
         ShopController controller = new ShopController(model, view);
-        model.addObserver(view);
     }
     
 }

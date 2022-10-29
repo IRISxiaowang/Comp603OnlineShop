@@ -5,7 +5,7 @@
 package newonlineshop;
 
 /**
- *
+ * This class represents a seller. Inherits User class.
  * @author xiaowang
  */
 public class UserSeller extends User {
