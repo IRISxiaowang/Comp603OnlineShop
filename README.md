@@ -98,6 +98,9 @@ Classes and methods are commented.
 The project is hosted in Github. Vision control is used (git).
 This assignment is done individually, I only branched and merged to show I know how to do it.
 
+*Database files and some netbeans config files are not tracked in git, and are added to gitignore. They will be included in the .zip submission.*
+
+
 #### Tests
 Unit test framework was used. Database was the class used for the unit tests. 
 14 tests are written. Each tests contains one or more test cases.
