@@ -35,7 +35,7 @@ public class RechargeView extends JFrame {
     private JButton quitButton = new JButton("Quit");
     public RechargeView(){
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(680, 200);
+        this.setSize(630, 200);
         this.setResizable(false);
         //this.model = model;
         showRechargeMenu();

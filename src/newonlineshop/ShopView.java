@@ -55,7 +55,7 @@ public class ShopView extends JFrame{
     public ShopView(){
         currentStage = ProgramStage.LOGIN;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(680, 200);
+        this.setSize(630, 200);
         this.setResizable(false);
         showLoginMenu();
         this.setVisible(true);

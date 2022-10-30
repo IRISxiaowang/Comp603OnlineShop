@@ -33,7 +33,7 @@ public class AddProductView extends JFrame  {
     public AddProductView(){
         // Display the current view.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(680, 200);
+        this.setSize(630, 200);
         this.setResizable(false);
         //this.model = model;
         showAddProductMenu();

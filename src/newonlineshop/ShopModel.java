@@ -59,6 +59,11 @@ public class ShopModel{
         currentUser = db.login(username, password);
     }
     
+    /// Resets the currentUser.
+    public void logout(){
+        currentUser = null;
+    }
+    
     /// Checks if user exists.
     public boolean hasUser(String username) {
         return db.hasUser(username);

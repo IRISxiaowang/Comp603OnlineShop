@@ -49,7 +49,7 @@ public class ShopController implements ActionListener {
                     model.login(username, password);
                 }
                 if (model.getCurrentUser() == null) {
-                    view.updateMessage("    Login failed.   Incorrect Username or password.  Please try again.");
+                    view.updateMessage("          Login failed.    Incorrect Username or password.   Please try again.");
                 } else {
                     view.updateMessage("Login Successful. Welcome " + model.getCurrentUser().name);
                     view.setVisible(false);
@@ -126,6 +126,7 @@ public class ShopController implements ActionListener {
                 if(sellHistoryView != null && sellHistoryView.isActive()){
                     sellHistoryView.setVisible(false);
                 }
+                model.logout();
                 view.setVisible(true);
                 view.showLoginMenu();
                 view.updateMessage(" ");
