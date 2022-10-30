@@ -42,8 +42,10 @@ The user can quit at any stage, or go back to the main menu/login menu easily.
 Error messages are displayed if input does not meet requirement.
 
 ### Database
-All database related code can be found in Database.java
+All database related code can be found in Database.java.
+
 OnlineShopDB is the production Database.
+
 OnlineShopMock is used for unit tests.
 
 There are 3 database tables: ShopUser, Product, ProductTransaction
