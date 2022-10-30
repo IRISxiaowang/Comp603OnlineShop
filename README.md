@@ -75,9 +75,9 @@ There are 17 classes in the product and 1 test class. The project reuse some bas
 #### OOP concepts:
 All OOP concepts are used. Some examples are provided here:
 
-**Abstraction:** Database: executeSqlUpdate, executeSqlQuery etc.
+**Abstraction:** ShopModel: Database and currentUser are private, and functions used for other classes are public. ShopView: Some elements used by other classes (such as TextFields) are public, others (such as buttons and JLabels) are private.
 
-**Encapsulation:** ShopView (any elements that are used by outside classes are private), Users, ShopModel has private currentUser, which can only be set by Login method and can be get by a getCurrentUser() method.
+**Encapsulation:** ShopView (any elements that are used by outside classes are private). ShopModel has private currentUser, which can only be set by Login method and can be get by a getCurrentUser() method. The "info" JLabel used to display messages in many views are private, but an function updateMessage is provided to set the value of the message.
 
 **Inheritance:** Both UserBuyer and UserSeller inherits User class.
 

@@ -49,7 +49,7 @@ public class ShopController implements ActionListener {
                     model.login(username, password);
                 }
                 if (model.getCurrentUser() == null) {
-                    view.updateMessage("Login failed. Incorrect Username or password.");
+                    view.updateMessage("    Login failed.   Incorrect Username or password.  Please try again.");
                 } else {
                     view.updateMessage("Login Successful. Welcome " + model.getCurrentUser().name);
                     view.setVisible(false);
@@ -165,6 +165,8 @@ public class ShopController implements ActionListener {
                 if(row != -1){
                     String selectedProductName = (String) buyMenuView.productsTable.getValueAt(row, 0);
                     buy(selectedProductName);
+                }else{
+                    buyMenuView.updateMessage("Before click buy botton, please choose a product.");
                 }
                 break;
             case "Sell":

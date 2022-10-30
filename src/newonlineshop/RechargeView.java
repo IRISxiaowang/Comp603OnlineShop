@@ -32,7 +32,7 @@ public class RechargeView extends JFrame {
     
     private JButton toSellerButton = new JButton("Back to buy menu");
     private JButton rechargeButton = new JButton("Recharge");
-    
+    private JButton quitButton = new JButton("Quit");
     public RechargeView(){
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(680, 200);
@@ -63,6 +63,7 @@ public class RechargeView extends JFrame {
         
         rechargePanel.add(rechargeButton);
         rechargePanel.add(toSellerButton);
+        rechargePanel.add(quitButton);
         
         rechargePanel.add(info);
         
@@ -74,6 +75,7 @@ public class RechargeView extends JFrame {
     public void addActionListener(ActionListener listener){
         this.rechargeButton.addActionListener(listener);
         this.toSellerButton.addActionListener(listener);
+        this.quitButton.addActionListener(listener);
     }
     
     /// Update user messages

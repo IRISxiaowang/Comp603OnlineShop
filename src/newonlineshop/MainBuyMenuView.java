@@ -23,7 +23,6 @@ import javax.swing.table.DefaultTableModel;
 public class MainBuyMenuView extends JFrame{
     ProgramStage currentStage;
    
-    
     private JPanel buyPanel = new JPanel();
     private JLabel userName = new JLabel();
     private JLabel currentBalance = new JLabel();
@@ -78,9 +77,8 @@ public class MainBuyMenuView extends JFrame{
         productsTable = new JTable(tableModel);
         productsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         buyPanel.add(new JScrollPane(productsTable));
-        
+
         buyPanel.add(info);
-        
         this.add(buyPanel);
         buyPanel.setVisible(true);
         //this.setVisible(true);

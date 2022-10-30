@@ -28,6 +28,7 @@ public class AddProductView extends JFrame  {
     
     private JButton toSellerButton = new JButton("Back to sell menu");
     private JButton addProductButton = new JButton("Add product");
+    private JButton quitButton = new JButton("Quit");
     
     public AddProductView(){
         // Display the current view.
@@ -53,6 +54,7 @@ public class AddProductView extends JFrame  {
         
         addPanel.add(addProductButton);
         addPanel.add(toSellerButton);
+        addPanel.add(quitButton);
         
         addPanel.add(info);
         
@@ -63,6 +65,7 @@ public class AddProductView extends JFrame  {
     public void addActionListener(ActionListener listener){//****controller switch to different action 
         this.addProductButton.addActionListener(listener);
         this.toSellerButton.addActionListener(listener);
+        this.quitButton.addActionListener(listener);
     }
     
     // for displaying error message to the user.
