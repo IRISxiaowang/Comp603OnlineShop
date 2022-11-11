@@ -247,14 +247,20 @@ public class ShopController implements ActionListener {
                 /// Perform search for the current product table.
                 if (model.getCurrentUser().role == Role.SELLER) {
                     if(sellMenuView.isActive()){
-                    ArrayList<String[]> search = model.searchProduct(sellMenuView.searchInput.getText());
-                    sellMenuView.refreshSearchTable(search);
+                        if(isSearchValid()){
+                            sellMenuView.updateMessage("");
+                            ArrayList<String[]> search = model.searchProduct(sellMenuView.searchInput.getText());
+                            sellMenuView.refreshSearchTable(search);
+                        }
                     }                    
                 }
                 if (model.getCurrentUser().role == Role.BUYER) {
                     if(buyMenuView.isActive()){
-                        ArrayList<String[]> search = model.searchProduct(buyMenuView.searchInput.getText());
-                        buyMenuView.refreshSearchTable(search);
+                        if(isSearchValid()){
+                            buyMenuView.updateMessage("");
+                            ArrayList<String[]> search = model.searchProduct(buyMenuView.searchInput.getText());
+                            buyMenuView.refreshSearchTable(search);
+                        }
                     }
                 }
                 break;
@@ -369,7 +375,18 @@ public class ShopController implements ActionListener {
         }
         return true;
     }
-    
+    ///Checks if a string input is valid.
+    public boolean isSearchValid(){
+        if (sellMenuView != null && sellMenuView.searchInput.getText().trim().contains("'")) {
+            sellMenuView.updateMessage("Please try again.  Search cannot contain \" ' \".");
+            return false;
+        }
+        if (buyMenuView != null && buyMenuView.searchInput.getText().trim().contains("'")) {
+            buyMenuView.updateMessage("Please try again.  Search cannot contain \" ' \".");
+            return false;
+        }
+        return true;
+    }
     /// Checks if a product data is valid.
     public boolean isProductDataValid(Product product) {
         if (product.productName.trim().length() == 0) {
